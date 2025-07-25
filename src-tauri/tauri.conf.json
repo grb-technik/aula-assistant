@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.tauri.app/config/2",
+    "productName": "aula_assistant",
+    "version": "0.1.0",
+    "identifier": "com.github.grb-technik.aula_assistant",
+    "build": {
+        "beforeDevCommand": "pnpm dev",
+        "devUrl": "http://localhost:1420",
+        "beforeBuildCommand": "pnpm build",
+        "frontendDist": "../dist"
+    },
+    "app": {
+        "windows": [
+            {
+                "title": "ATec Aula Assistant",
+                "width": 1280,
+                "height": 720,
+                "center": true,
+                "focus": true,
+                "theme": "Dark",
+                "decorations": false,
+                "tabbingIdentifier": "aula_assistant"
+            }
+        ],
+        "security": {
+            "csp": null
+        }
+    },
+    "bundle": {
+        "copyright": "Copyright © 2025 ATec Gymnasium Riedberg",
+        "publisher": "ATec Gymnasium Riedberg",
+        "license": "GNU GPLv3",
+        "category": "Utility",
+        "homepage": "https://github.com/grb-technik/aula_assistant",
+        "licenseFile": "../LICENSE.txt",
+        "active": true,
+        "targets": "msi",
+        "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"]
+    }
+}
