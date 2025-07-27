@@ -1,10 +1,7 @@
 import {
     Menubar,
-    MenubarCheckboxItem,
     MenubarContent,
-    MenubarGroup,
     MenubarItem,
-    MenubarLabel,
     MenubarMenu,
     MenubarSeparator,
     MenubarShortcut,
@@ -19,8 +16,6 @@ import {
 } from "@/components/ui/context-menu";
 import { TraficLights } from "./trafic-lights";
 import { useWindow } from "@/contexts/window";
-import { Edit } from "lucide-react";
-import { XSTextMono } from "@/components/text-utils";
 
 export function AppBar() {
     const { isWindowMaximized, minimizeWindow, maximizeWindow, unmaximizeWindow, toggleMaximizeWindow, closeWindow } =
@@ -51,24 +46,8 @@ export function AppBar() {
 
             <Menubar className="h-full border-0 bg-transparent shadow-none">
                 <MenubarMenu>
-                    <MenubarTrigger>Network</MenubarTrigger>
-                    <MenubarContent>
-                        <MenubarGroup>
-                            <MenubarLabel>Art-Net</MenubarLabel>
-                            <MenubarCheckboxItem>Broadcast</MenubarCheckboxItem>
-                            <MenubarItem>
-                                <Edit /> Node-IP <XSTextMono>(255.255.255.255)</XSTextMono>
-                            </MenubarItem>
-                            <MenubarItem>
-                                <Edit /> Node-Port <XSTextMono>(5654)</XSTextMono>
-                            </MenubarItem>
-                        </MenubarGroup>
-                    </MenubarContent>
-                </MenubarMenu>
-                <MenubarMenu>
                     <MenubarTrigger>Window</MenubarTrigger>
                     <MenubarContent>
-                        <MenubarSeparator />
                         <MenubarItem onClick={toggleMaximizeWindow}>Maximize</MenubarItem>
                         <MenubarItem onClick={minimizeWindow}>Minimize</MenubarItem>
                         <MenubarItem onClick={closeWindow}>
@@ -82,13 +61,13 @@ export function AppBar() {
                     <MenubarContent>
                         <a
                             target="_blank"
-                            href="https://github.com/grb-technik/artnet-controller/blob/master/LICENSE.txt">
+                            href="https://github.com/grb-technik/aula_assistant/blob/master/LICENSE.txt">
                             <MenubarItem>View License</MenubarItem>
                         </a>
                         <MenubarSeparator />
                         <a
                             target="_blank"
-                            href="https://github.com/grb-technik/artnet-controller/blob/master/docs/README.md">
+                            href="https://github.com/grb-technik/aula_assistant/blob/master/README.md">
                             <MenubarItem>About</MenubarItem>
                         </a>
                     </MenubarContent>

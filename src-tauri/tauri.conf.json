@@ -13,8 +13,8 @@
         "windows": [
             {
                 "title": "ATec Aula Assistant",
-                "width": 1280,
-                "height": 720,
+                "width": 800,
+                "height": 480,
                 "center": true,
                 "focus": true,
                 "theme": "Dark",

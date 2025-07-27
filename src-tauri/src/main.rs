@@ -1,6 +1,48 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-fn main() {
-    aula_assistant_lib::run()
+use clap::{ArgAction, arg, command, crate_description, crate_name, crate_version};
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let matches = command!()
+        .about(crate_description!())
+        // help
+        .after_help("Please refer to the documentation for further information.")
+        .after_long_help("Please refer to the documentation for further information.")
+        .next_line_help(true)
+        // version
+        .disable_version_flag(true)
+        .arg(arg!(-v --version "Print version").action(ArgAction::SetTrue))
+        // license
+        .arg(arg!(--license "Print license").action(ArgAction::SetTrue))
+        // hide appbar
+        .arg(arg!(--"hide-appbar" "Run without the appbar").action(ArgAction::SetTrue))
+        .get_matches();
+
+    if matches.get_flag("version") {
+        println!(
+            "{} {} ({} {})",
+            crate_name!(),
+            crate_version!(),
+            env!("LAST_COMMIT_ID"),
+            env!("LAST_COMMIT_DATE"),
+        );
+
+        return Ok(());
+    }
+
+    if matches.get_flag("license") {
+        println!(include_str!("../../LICENSE.txt"));
+        return Ok(());
+    }
+
+    let mut cb = aula_assistant_lib::RuntimeConfigBuilder::new();
+
+    if matches.get_flag("hide-appbar") {
+        cb = cb.hide_appbar(true);
+    }
+
+    aula_assistant_lib::run(cb.build()).expect("error while running tauri application");
+
+    Ok(())
 }
