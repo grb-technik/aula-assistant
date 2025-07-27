@@ -16,10 +16,38 @@ import {
 } from "@/components/ui/context-menu";
 import { TraficLights } from "./trafic-lights";
 import { useWindow } from "@/contexts/window";
+import { useEffect, useState } from "react";
 
 export function MenuAppBar() {
     const { isWindowMaximized, minimizeWindow, maximizeWindow, unmaximizeWindow, toggleMaximizeWindow, closeWindow } =
         useWindow();
+
+    const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+    const toggleFullscreen = () => {
+        if (isFullscreen) {
+            unmaximizeWindow();
+            setIsFullscreen(false);
+        } else {
+            maximizeWindow();
+            setIsFullscreen(true);
+        }
+    };
+
+    useEffect(() => {
+        const handleKeydown = (event: KeyboardEvent) => {
+            if (event.key === "F11") {
+                event.preventDefault();
+                toggleFullscreen();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeydown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeydown);
+        };
+    });
 
     return (
         <header
@@ -48,7 +76,13 @@ export function MenuAppBar() {
                 <MenubarMenu>
                     <MenubarTrigger>Window</MenubarTrigger>
                     <MenubarContent>
-                        <MenubarItem onClick={toggleMaximizeWindow}>Maximize</MenubarItem>
+                        <MenubarItem onClick={toggleFullscreen}>
+                            Full Screen
+                            <MenubarShortcut>F11</MenubarShortcut>
+                        </MenubarItem>
+                        <MenubarItem onClick={toggleMaximizeWindow} disabled={isWindowMaximized}>
+                            Maximize
+                        </MenubarItem>
                         <MenubarItem onClick={minimizeWindow}>Minimize</MenubarItem>
                         <MenubarItem onClick={closeWindow}>
                             Close
@@ -56,25 +90,34 @@ export function MenuAppBar() {
                         </MenubarItem>
                     </MenubarContent>
                 </MenubarMenu>
+
                 <MenubarMenu>
                     <MenubarTrigger>Help</MenubarTrigger>
                     <MenubarContent>
-                        <a
-                            target="_blank"
-                            href="https://github.com/grb-technik/aula_assistant/blob/master/LICENSE.txt">
-                            <MenubarItem>View License</MenubarItem>
+                        <a target="_blank" href="#TODO">
+                            <MenubarItem>Documentation</MenubarItem>
                         </a>
+                        <a target="_blank" href="#TODO">
+                            <MenubarItem>Show Release Notes</MenubarItem>
+                        </a>
+
                         <MenubarSeparator />
-                        <a
-                            target="_blank"
-                            href="https://github.com/grb-technik/aula_assistant/blob/master/README.md">
-                            <MenubarItem>About</MenubarItem>
+
+                        <a target="_blank" href="https://github.com/grb-technik/aula_assistant/issues/new/choose">
+                            <MenubarItem>Report Issue</MenubarItem>
+                        </a>
+
+                        <MenubarSeparator />
+
+                        <a target="_blank" href="https://github.com/grb-technik/aula_assistant/blob/master/LICENSE.txt">
+                            <MenubarItem>View License</MenubarItem>
                         </a>
                     </MenubarContent>
                 </MenubarMenu>
             </Menubar>
 
-            <TraficLights className="absolute right-0" />
+            {isFullscreen ? null : <TraficLights className="absolute right-0" />}
         </header>
     );
 }
+

@@ -5,7 +5,7 @@ edition = "2024"
 publish = false
 description = "A user-friendly media control system used in the Gymnasium Riedberg auditorium."
 repository = "https://github.com/grb-technik/aula_assistant"
-documentation = "https://github.com/grb-technik/aula_assistant/blob/master/README.md"
+readme = "https://github.com/grb-technik/aula_assistant/blob/master/README.md"
 authors = [
     "Christian Fuchte <christian.fuchte@grb-online.net>"
 ]
