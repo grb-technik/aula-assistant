@@ -1,5 +1,6 @@
 use std::sync::Mutex;
 use tauri::{Manager, State};
+use tauri_plugin_log::{Target, TargetKind};
 
 pub struct RuntimeConfigBuilder {
     hide_appbar: bool,
@@ -55,11 +56,21 @@ impl From<RuntimeConfig> for AppState {
     }
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
     let app_state = AppState::from(config);
 
     tauri::Builder::default()
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .clear_targets()
+                .target(Target::new(TargetKind::LogDir {
+                    file_name: Some("logs".into()),
+                }))
+                .max_file_size(1024 * 1024 * 10) // 10 MB
+                .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
+                .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
+                .build(),
+        )
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             app.manage(Mutex::new(app_state));

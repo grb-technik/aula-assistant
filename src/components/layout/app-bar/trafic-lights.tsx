@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useWindow } from "@/contexts/window";
-import { CloseWindowIcon, MaximizeRestoreWindowIcon, MaximizeWindowIcon, MinimizeWindowIcon } from "./icons";
+import { CloseWindowIcon, MaximizeRestoreWindowIcon, MaximizeWindowIcon, MinimizeWindowIcon } from "@/components/icons";
 
 const TraficLightIconBtn = (props: JSX.IntrinsicAttributes & React.ComponentProps<"button">) => (
     <button
@@ -36,3 +36,4 @@ export function TraficLights({ className }: { className?: string }) {
         </div>
     );
 }
+

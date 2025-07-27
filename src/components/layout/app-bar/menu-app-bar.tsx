@@ -17,7 +17,7 @@ import {
 import { TraficLights } from "./trafic-lights";
 import { useWindow } from "@/contexts/window";
 
-export function AppBar() {
+export function MenuAppBar() {
     const { isWindowMaximized, minimizeWindow, maximizeWindow, unmaximizeWindow, toggleMaximizeWindow, closeWindow } =
         useWindow();
 
