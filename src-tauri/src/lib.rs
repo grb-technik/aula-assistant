@@ -1,13 +1,14 @@
 use crate::{
     config::RuntimeConfig,
-    state::{AppState, AppStateBuilder, TakeFrom},
+    state::{AppStateBuilder, TakeFrom},
 };
 use std::{path::PathBuf, sync::Mutex};
-use tauri::{Manager, State};
+use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
+mod commands;
 pub mod config;
-pub mod state;
+mod state;
 
 pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
     let mut apb = AppStateBuilder::new();
@@ -91,12 +92,9 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![get_show_appbar])
+        .invoke_handler(tauri::generate_handler![
+            commands::get_show_appbar,
+            commands::check_advanced_pin
+        ])
         .run(tauri::generate_context!())
-}
-
-#[tauri::command]
-fn get_show_appbar(state: State<'_, Mutex<AppState>>) -> bool {
-    let state = state.lock().expect("failed to lock AppState");
-    state.show_appbar()
 }

@@ -4,6 +4,10 @@ import { ViewLocation } from "..";
 import { ViewCard } from "@/components/view-card";
 import { PinInput } from "@/components/pin-input";
 import { useState } from "react";
+import { tryCatch } from "@/lib/try-catch";
+import { invoke } from "@tauri-apps/api/core";
+import { error } from "@tauri-apps/plugin-log";
+import { toast } from "sonner";
 
 export function AdvancedAuthenticateView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLocation) => void }) {
     const [pinInputMessage, setPinInputMessage] = useState<
@@ -16,12 +20,24 @@ export function AdvancedAuthenticateView({ onLocationSwitch }: { onLocationSwitc
             return;
         }
 
-        if (pin.join("") === "1234") {
-            // TODO
-            onLocationSwitch("start");
-        } else {
-            setPinInputMessage("Pin incorrect.");
-        }
+        tryCatch(
+            invoke<boolean>("check_advanced_pin", {
+                pin: pin.join(""),
+            }),
+        ).then((result) => {
+            if (result.error) {
+                error(`Failed to authenticate: failed to invoke check_advanced_pin: ${result.error.message}`);
+                toast.error("Failed to authenticate.");
+                return;
+            }
+
+            if (result.data) {
+                // TODO:
+                onLocationSwitch("start");
+            } else {
+                setPinInputMessage("Pin incorrect.");
+            }
+        });
     };
 
     return (

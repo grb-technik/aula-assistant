@@ -17,13 +17,15 @@ export default function App() {
     useEffect(() => {
         tryCatch(invoke<boolean>("get_show_appbar")).then((result) => {
             if (result.error) {
-                error(`Failed to retrieve app bar visibility setting: ${result.error.message}`);
+                error(
+                    `failed to retrieve app bar visibility setting: failed to invoke get_show_appbar: ${result.error.message}`,
+                );
                 toast.error("Failed to retrieve app bar visibility setting.");
                 return;
             }
 
             setShowAppBar(Boolean(result.data) ?? false);
-            info(`App bar visibility set to: ${result.data}`);
+            info(`app bar visibility set to: ${result.data}`);
         });
     }, [invoke, setShowAppBar]);
 
