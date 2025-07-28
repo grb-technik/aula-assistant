@@ -1,40 +1,9 @@
+use crate::config::RuntimeConfig;
 use std::sync::Mutex;
 use tauri::{Manager, State};
 use tauri_plugin_log::{Target, TargetKind};
 
-pub struct RuntimeConfigBuilder {
-    tablet_mode: bool,
-}
-
-impl RuntimeConfigBuilder {
-    pub fn new() -> Self {
-        RuntimeConfigBuilder { tablet_mode: false }
-    }
-
-    /// default: false
-    pub fn tablet_mode(mut self, value: bool) -> Self {
-        self.tablet_mode = value;
-        self
-    }
-
-    pub fn build(self) -> RuntimeConfig {
-        RuntimeConfig::new(self.tablet_mode)
-    }
-}
-
-pub struct RuntimeConfig {
-    tablet_mode: bool,
-}
-
-impl RuntimeConfig {
-    pub fn new(tablet_mode: bool) -> Self {
-        RuntimeConfig { tablet_mode }
-    }
-
-    pub fn tablet_mode(&self) -> bool {
-        self.tablet_mode
-    }
-}
+pub mod config;
 
 struct AppState {
     show_appbar: bool,
@@ -50,14 +19,14 @@ impl AppState {
     }
 }
 
-impl From<RuntimeConfig> for AppState {
-    fn from(config: RuntimeConfig) -> Self {
+impl From<&RuntimeConfig> for AppState {
+    fn from(config: &RuntimeConfig) -> Self {
         AppState::new(!config.tablet_mode())
     }
 }
 
 pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
-    let app_state = AppState::from(config);
+    let app_state = AppState::from(&config);
 
     tauri::Builder::default()
         .plugin(
@@ -72,8 +41,41 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
                 .build(),
         )
         .plugin(tauri_plugin_opener::init())
-        .setup(|app| {
+        .setup(move |app| {
+            let config_dir;
+
+            if config.config_file_path().is_some() {
+                config_dir = config
+                    .config_file_path()
+                    .unwrap()
+                    .parent()
+                    .unwrap()
+                    .to_path_buf();
+            } else {
+                config_dir = match app.path().app_config_dir() {
+                    Ok(path) => path,
+                    Err(e) => {
+                        log::error!("failed to get app config directory: {}", e);
+                        return Err(e.into());
+                    }
+                };
+            }
+
+            let config_file_content = config::read_config_file(&config_dir).map_err(|e| {
+                log::error!("failed to read config file: {}", e);
+                e
+            });
+
+            if let Some(content) = config_file_content.unwrap() {
+                let _config_file_contents = config::yaml::parse_yaml(&content).map_err(|e| {
+                    log::error!("failed to parse YAML config: {}", e);
+                    e
+                });
+                // TODO: do smth with it
+            }
+
             app.manage(Mutex::new(app_state));
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![get_show_appbar])

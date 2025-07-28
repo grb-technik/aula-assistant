@@ -17,6 +17,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .arg(arg!(--license "Print license").action(ArgAction::SetTrue))
         // tablet mode
         .arg(arg!(-t --"tablet" "Tablet mode").action(ArgAction::SetTrue))
+        // config file path
+        .arg(
+            arg!(--"config-file" <FILE> "Path to the configuration file")
+                .value_name("FILE")
+                .required(false),
+        )
         .get_matches();
 
     if matches.get_flag("version") {
@@ -36,10 +42,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let mut cb = aula_assistant_lib::RuntimeConfigBuilder::new();
+    let mut cb = aula_assistant_lib::config::RuntimeConfigBuilder::new();
 
     if matches.get_flag("tablet") {
         cb = cb.tablet_mode(true);
+    }
+
+    if let Some(config_file) = matches.get_one::<String>("config-file") {
+        cb = cb.config_file(config_file.to_string());
     }
 
     aula_assistant_lib::run(cb.build()).expect("error while running tauri application");
