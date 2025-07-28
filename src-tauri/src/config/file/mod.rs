@@ -4,3 +4,4 @@ mod schema;
 pub mod yaml;
 
 pub use fs::read_config_file;
+pub use schema::Schema;

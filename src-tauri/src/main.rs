@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .arg(arg!(-t --"tablet" "Tablet mode").action(ArgAction::SetTrue))
         // config file path
         .arg(
-            arg!(--"config-file" <FILE> "Path to the configuration file")
+            arg!(-c --"config-file" <FILE> "Path to the configuration file")
                 .value_name("FILE")
                 .required(false),
         )

@@ -1,9 +1,10 @@
-use std::fmt::Display;
+use std::{fmt::Display, path::PathBuf};
 
 #[derive(Debug)]
 pub enum ConfigError {
     YamlError(serde_yaml::Error),
     IoError(std::io::Error),
+    FileNotFound(PathBuf),
 }
 
 impl Display for ConfigError {
@@ -14,6 +15,7 @@ impl Display for ConfigError {
             match self {
                 ConfigError::YamlError(e) => format!("YAML error: {}", e),
                 ConfigError::IoError(e) => format!("IO error: {}", e),
+                ConfigError::FileNotFound(path) => format!("File not found: {}", path.display()),
             }
         )
     }

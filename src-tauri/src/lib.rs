@@ -1,29 +1,10 @@
-use crate::config::RuntimeConfig;
-use std::sync::Mutex;
+use crate::{config::RuntimeConfig, state::AppState};
+use std::{path::PathBuf, sync::Mutex};
 use tauri::{Manager, State};
 use tauri_plugin_log::{Target, TargetKind};
 
 pub mod config;
-
-struct AppState {
-    show_appbar: bool,
-}
-
-impl AppState {
-    pub fn new(show_appbar: bool) -> Self {
-        AppState { show_appbar }
-    }
-
-    pub fn show_appbar(&self) -> bool {
-        self.show_appbar
-    }
-}
-
-impl From<&RuntimeConfig> for AppState {
-    fn from(config: &RuntimeConfig) -> Self {
-        AppState::new(!config.tablet_mode())
-    }
-}
+pub mod state;
 
 pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
     let app_state = AppState::from(&config);
@@ -35,6 +16,9 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
                 .target(Target::new(TargetKind::LogDir {
                     file_name: Some("logs".into()),
                 }))
+                .target(tauri_plugin_log::Target::new(
+                    tauri_plugin_log::TargetKind::Stdout,
+                ))
                 .max_file_size(1024 * 1024 * 10) // 10 MB
                 .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepOne)
                 .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
@@ -42,17 +26,12 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
         )
         .plugin(tauri_plugin_opener::init())
         .setup(move |app| {
-            let config_dir;
+            let mut config_path;
 
             if config.config_file_path().is_some() {
-                config_dir = config
-                    .config_file_path()
-                    .unwrap()
-                    .parent()
-                    .unwrap()
-                    .to_path_buf();
+                config_path = config.config_file_path().unwrap().to_path_buf();
             } else {
-                config_dir = match app.path().app_config_dir() {
+                config_path = match app.path().app_config_dir() {
                     Ok(path) => path,
                     Err(e) => {
                         log::error!("failed to get app config directory: {}", e);
@@ -61,18 +40,49 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
                 };
             }
 
-            let config_file_content = config::read_config_file(&config_dir).map_err(|e| {
+            if config_path == PathBuf::from(".") {
+                config_path = std::env::current_dir().map_err(|e| {
+                    log::error!("failed to get current directory: {}", e);
+                    e
+                })?;
+            }
+
+            if config_path.is_relative() {
+                config_path = std::env::current_dir()
+                    .map_err(|e| {
+                        log::error!("failed to get current directory: {}", e);
+                        e
+                    })?
+                    .join(config_path);
+            }
+
+            if !config_path.ends_with("config.yaml") {
+                config_path = config_path.join("config.yaml");
+            }
+
+            log::info!("using config path: {}", config_path.display());
+
+            let config_file_content = config::read_config_file(config_path).map_err(|e| {
                 log::error!("failed to read config file: {}", e);
                 e
             });
 
+            let cfg;
+
             if let Some(content) = config_file_content.unwrap() {
-                let _config_file_contents = config::yaml::parse_yaml(&content).map_err(|e| {
-                    log::error!("failed to parse YAML config: {}", e);
-                    e
-                });
-                // TODO: do smth with it
+                cfg = config::yaml::parse_yaml(&content)
+                    .map_err(|e| {
+                        log::error!("failed to parse YAML config: {}", e);
+                        e
+                    })
+                    .unwrap();
+            } else {
+                log::info!("empty config file found, using default settings.");
+                cfg = config::Schema::default();
             }
+
+            // TODO: do smth with the config
+            log::debug!("parsed config: {}", cfg);
 
             app.manage(Mutex::new(app_state));
 
