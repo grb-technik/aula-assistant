@@ -1,4 +1,7 @@
-use crate::{config::RuntimeConfig, state::AppState};
+use crate::{
+    config::RuntimeConfig,
+    state::{AppState, AppStateBuilder, TakeFrom},
+};
 use std::{path::PathBuf, sync::Mutex};
 use tauri::{Manager, State};
 use tauri_plugin_log::{Target, TargetKind};
@@ -7,7 +10,8 @@ pub mod config;
 pub mod state;
 
 pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
-    let app_state = AppState::from(&config);
+    let mut apb = AppStateBuilder::new();
+    apb.take_from(&config);
 
     tauri::Builder::default()
         .plugin(
@@ -81,10 +85,9 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
                 cfg = config::Schema::default();
             }
 
-            // TODO: do smth with the config
-            log::debug!("parsed config: {}", cfg);
+            apb.take_from(&cfg);
 
-            app.manage(Mutex::new(app_state));
+            app.manage(Mutex::new(apb.build()));
 
             Ok(())
         })
