@@ -7,10 +7,11 @@ import { useEffect, useState } from "react";
 import { tryCatch } from "./lib/try-catch";
 import { toast } from "sonner";
 import { info, error } from "@tauri-apps/plugin-log";
+import { Views } from "./views";
 
 import "./styles/global.css";
 
-function App() {
+export default function App() {
     const [showAppBar, setShowAppBar] = useState<boolean>(false);
 
     useEffect(() => {
@@ -31,14 +32,12 @@ function App() {
             <WindowProvider>
                 {showAppBar ? <MenuAppBar /> : null}
 
-                <main
-                    className={cn("w-full", showAppBar ? "mt-10 min-h-[calc(100dvh-40px)]" : "mt-0 min-h-dvh")}></main>
+                <main className={cn("w-full", showAppBar ? "mt-10 min-h-[calc(100dvh-40px)]" : "mt-0 min-h-dvh")}>
+                    <Views />
+                </main>
             </WindowProvider>
 
             <Toaster richColors />
         </>
     );
 }
-
-export default App;
-

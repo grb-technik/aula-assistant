@@ -2,9 +2,8 @@
 name: Feature Request
 about: Request a new feature
 title: "[FEAT] short descriptive title"
-labels: 
-assignees: ''
-
+labels:
+assignees: ""
 ---
 
 **Describe your wish**

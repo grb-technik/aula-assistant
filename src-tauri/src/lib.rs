@@ -3,36 +3,36 @@ use tauri::{Manager, State};
 use tauri_plugin_log::{Target, TargetKind};
 
 pub struct RuntimeConfigBuilder {
-    hide_appbar: bool,
+    tablet_mode: bool,
 }
 
 impl RuntimeConfigBuilder {
     pub fn new() -> Self {
-        RuntimeConfigBuilder { hide_appbar: false }
+        RuntimeConfigBuilder { tablet_mode: false }
     }
 
     /// default: false
-    pub fn hide_appbar(mut self, value: bool) -> Self {
-        self.hide_appbar = value;
+    pub fn tablet_mode(mut self, value: bool) -> Self {
+        self.tablet_mode = value;
         self
     }
 
     pub fn build(self) -> RuntimeConfig {
-        RuntimeConfig::new(self.hide_appbar)
+        RuntimeConfig::new(self.tablet_mode)
     }
 }
 
 pub struct RuntimeConfig {
-    hide_appbar: bool,
+    tablet_mode: bool,
 }
 
 impl RuntimeConfig {
-    pub fn new(hide_appbar: bool) -> Self {
-        RuntimeConfig { hide_appbar }
+    pub fn new(tablet_mode: bool) -> Self {
+        RuntimeConfig { tablet_mode }
     }
 
-    pub fn hide_appbar(&self) -> bool {
-        self.hide_appbar
+    pub fn tablet_mode(&self) -> bool {
+        self.tablet_mode
     }
 }
 
@@ -52,7 +52,7 @@ impl AppState {
 
 impl From<RuntimeConfig> for AppState {
     fn from(config: RuntimeConfig) -> Self {
-        AppState::new(!config.hide_appbar())
+        AppState::new(!config.tablet_mode())
     }
 }
 

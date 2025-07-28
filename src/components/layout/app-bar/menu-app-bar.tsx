@@ -72,9 +72,9 @@ export function MenuAppBar() {
                 </ContextMenuContent>
             </ContextMenu>
 
-            <Menubar className="h-full border-0 bg-transparent shadow-none">
+            <Menubar tabIndex={-1} className="h-full border-0 bg-transparent shadow-none">
                 <MenubarMenu>
-                    <MenubarTrigger>Window</MenubarTrigger>
+                    <MenubarTrigger tabIndex={-1}>Window</MenubarTrigger>
                     <MenubarContent>
                         <MenubarItem onClick={toggleFullscreen}>
                             Full Screen
@@ -92,12 +92,14 @@ export function MenuAppBar() {
                 </MenubarMenu>
 
                 <MenubarMenu>
-                    <MenubarTrigger>Help</MenubarTrigger>
+                    <MenubarTrigger tabIndex={-1}>Help</MenubarTrigger>
                     <MenubarContent>
-                        <a target="_blank" href="#TODO">
+                        <a target="_blank" href="https://aula-assistant.teschnik.de/docs">
                             <MenubarItem>Documentation</MenubarItem>
                         </a>
-                        <a target="_blank" href="#TODO">
+                        <a
+                            target="_blank"
+                            href="https://github.com/grb-technik/aula_assistant/blob/master/CHANGELOG.md">
                             <MenubarItem>Show Release Notes</MenubarItem>
                         </a>
 
@@ -120,4 +122,3 @@ export function MenuAppBar() {
         </header>
     );
 }
-

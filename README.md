@@ -16,4 +16,3 @@ If you'd love to help improving this tool checkout the [contributing guide](CONT
 ## License
 
 This project is licensed under the [GNU GPL-3.0](LICENSE.txt).
-

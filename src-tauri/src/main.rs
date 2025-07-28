@@ -15,8 +15,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .arg(arg!(-v --version "Print version").action(ArgAction::SetTrue))
         // license
         .arg(arg!(--license "Print license").action(ArgAction::SetTrue))
-        // hide appbar
-        .arg(arg!(--"hide-appbar" "Run without the appbar").action(ArgAction::SetTrue))
+        // tablet mode
+        .arg(arg!(-t --"tablet" "Tablet mode").action(ArgAction::SetTrue))
         .get_matches();
 
     if matches.get_flag("version") {
@@ -38,8 +38,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut cb = aula_assistant_lib::RuntimeConfigBuilder::new();
 
-    if matches.get_flag("hide-appbar") {
-        cb = cb.hide_appbar(true);
+    if matches.get_flag("tablet") {
+        cb = cb.tablet_mode(true);
     }
 
     aula_assistant_lib::run(cb.build()).expect("error while running tauri application");

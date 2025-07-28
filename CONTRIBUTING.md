@@ -6,8 +6,8 @@ Thanks for your interest in contributing! Your help is greatly appreciated.
 
 Please check to install the following tools before contributing:
 
--   Code editor or IDE of your choice
--   Ensure you have the latest version of [Rust](https://www.rust-lang.org/tools/install) installed.
+- Code editor or IDE of your choice
+- Ensure you have the latest version of [Rust](https://www.rust-lang.org/tools/install) installed.
 
 ## How to Contribute
 

@@ -4,6 +4,7 @@ import { CloseWindowIcon, MaximizeRestoreWindowIcon, MaximizeWindowIcon, Minimiz
 
 const TraficLightIconBtn = (props: JSX.IntrinsicAttributes & React.ComponentProps<"button">) => (
     <button
+        tabIndex={-1}
         {...props}
         className={cn(
             "inline-flex h-full w-[46px] cursor-default items-center justify-center rounded-none bg-transparent text-black/90 dark:text-white",
@@ -21,19 +22,22 @@ export function TraficLights({ className }: { className?: string }) {
             <TraficLightIconBtn
                 onClick={minimizeWindow}
                 className="hover:bg-black/[.05] active:bg-black/[.03] dark:hover:bg-white/[.06] dark:active:bg-white/[.04]">
-                <MinimizeWindowIcon />
+                <MinimizeWindowIcon className="fill-foreground" fillOpacity="0.8956" />
             </TraficLightIconBtn>
             <TraficLightIconBtn
                 onClick={toggleMaximizeWindow}
                 className="hover:bg-black/[.05] active:bg-black/[.03] dark:hover:bg-white/[.06] dark:active:bg-white/[.04]">
-                {!isWindowMaximized ? <MaximizeWindowIcon /> : <MaximizeRestoreWindowIcon />}
+                {!isWindowMaximized ? (
+                    <MaximizeWindowIcon className="fill-foreground" fillOpacity="0.8956" />
+                ) : (
+                    <MaximizeRestoreWindowIcon className="fill-foreground" fillOpacity="0.8956" />
+                )}
             </TraficLightIconBtn>
             <TraficLightIconBtn
                 onClick={closeWindow}
                 className="hover:bg-[#c42b1c] hover:text-white active:bg-[#c42b1c]/90">
-                <CloseWindowIcon />
+                <CloseWindowIcon className="fill-foreground" fillOpacity="0.8956" />
             </TraficLightIconBtn>
         </div>
     );
 }
-
