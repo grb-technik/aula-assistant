@@ -1,34 +1,50 @@
-use std::fmt::Display;
-
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug, Clone, Serialize)]
 pub struct Schema {
-    advanced_pin: String,
-    tablet_mode_default: bool,
+    security: Security,
+    defaults: Defaults,
 }
 
 impl Schema {
     pub fn advanced_pin(&self) -> &str {
-        &self.advanced_pin
+        &self.security.advanced_pin()
     }
 
     pub fn tablet_mode_default(&self) -> bool {
-        self.tablet_mode_default
+        self.defaults.tablet_mode()
     }
 }
 
 impl Default for Schema {
     fn default() -> Self {
         Schema {
-            advanced_pin: "1234".to_string(),
-            tablet_mode_default: false,
+            defaults: Defaults { tablet_mode: true },
+            security: Security {
+                advanced_pin: "1234".to_string(),
+            },
         }
     }
 }
 
-impl Display for Schema {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Schema: {{}}")
+#[derive(Deserialize, Debug, Clone, Serialize)]
+pub struct Defaults {
+    tablet_mode: bool,
+}
+
+impl Defaults {
+    pub fn tablet_mode(&self) -> bool {
+        self.tablet_mode
+    }
+}
+
+#[derive(Deserialize, Debug, Clone, Serialize)]
+pub struct Security {
+    advanced_pin: String,
+}
+
+impl Security {
+    pub fn advanced_pin(&self) -> &str {
+        &self.advanced_pin
     }
 }
