@@ -1,11 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use clap::{ArgAction, arg, command, crate_description, crate_name, crate_version};
+use clap::{ArgAction, arg, command, crate_name, crate_version};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = command!()
-        .about(crate_description!())
         // help
         .after_help("Please refer to the documentation for further information.")
         .after_long_help("Please refer to the documentation for further information.")
@@ -26,12 +25,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .get_matches();
 
     if matches.get_flag("version") {
+        let commit_id = std::env::var("LAST_COMMIT_ID").ok();
+        let commit_date = std::env::var("LAST_COMMIT_DATE").ok();
+
+        if commit_id.is_none() || commit_date.is_none() {
+            println!("{} {}", crate_name!(), crate_version!());
+            return Ok(());
+        }
+
         println!(
             "{} {} ({} {})",
             crate_name!(),
             crate_version!(),
-            env!("LAST_COMMIT_ID"),
-            env!("LAST_COMMIT_DATE"),
+            commit_id.unwrap(),
+            commit_date.unwrap(),
         );
 
         return Ok(());

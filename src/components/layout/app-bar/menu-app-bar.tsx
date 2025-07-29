@@ -22,7 +22,6 @@ import * as os_info from "@tauri-apps/plugin-os";
 import { tryCatch } from "@/lib/try-catch";
 import { error } from "@tauri-apps/plugin-log";
 import { toast } from "sonner";
-import { invoke } from "@tauri-apps/api/core";
 import { useStartupData } from "@/contexts/startup-data";
 
 export function MenuAppBar() {
@@ -47,8 +46,7 @@ export function MenuAppBar() {
             message(
                 `Aula Assistant
 Version: ${startUpData.build.version}
-Commit: ${startUpData.build.commit.long_id}
-Date: ${startUpData.build.date}
+${startUpData.build.commit ? "Commit: " + startUpData.build.commit.long_id + "\n" : ""}Date: ${startUpData.build.date}
 OS: ${os_info.platform()} ${os_info.arch()} ${os_info.version()}`,
                 { title: "Aula Assistant", kind: "info" },
             ),

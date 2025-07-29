@@ -11,7 +11,7 @@ pub struct StartupData {
 
 #[derive(Serialize, Deserialize)]
 pub struct BuildInfo {
-    commit: CommitInfo,
+    commit: Option<CommitInfo>,
     date: String,
     version: String,
 }
@@ -29,19 +29,24 @@ pub fn get_startup_data(state: State<'_, Mutex<AppState>>) -> StartupData {
 
     let show_appbar = state.show_appbar();
 
-    let commit_date = std::env::var("LAST_COMMIT_DATE").unwrap_or_else(|_| "unknown".to_string());
-    let commit_short_id = std::env::var("LAST_COMMIT_ID").unwrap_or_else(|_| "unknown".to_string());
-    let commit_long_id =
-        std::env::var("LAST_COMMIT_ID_LONG").unwrap_or_else(|_| "unknown".to_string());
+    let commit_date = std::env::var("LAST_COMMIT_DATE").ok();
+    let commit_short_id = std::env::var("LAST_COMMIT_ID").ok();
+    let commit_long_id = std::env::var("LAST_COMMIT_ID_LONG").ok();
     let build_timestamp_utc =
-        std::env::var("BUILD_TIMESTAMP_UTC").unwrap_or_else(|_| "unknown".to_string());
-    let version = std::env::var("CARGO_PKG_VERSION").unwrap_or_else(|_| "unknown".to_string());
+        std::env::var("BUILD_TIMESTAMP_UTC").expect("BUILD_TIMESTAMP_UTC not set");
+    let version = std::env::var("CARGO_PKG_VERSION").expect("CARGO_PKG_VERSION not set");
 
-    let commit_info = CommitInfo {
-        date: commit_date,
-        short_id: commit_short_id,
-        long_id: commit_long_id,
-    };
+    let commit_info: Option<CommitInfo>;
+
+    if commit_date.is_none() || commit_short_id.is_none() || commit_long_id.is_none() {
+        commit_info = None;
+    } else {
+        commit_info = Some(CommitInfo {
+            date: commit_date.unwrap(),
+            short_id: commit_short_id.unwrap(),
+            long_id: commit_long_id.unwrap(),
+        });
+    }
 
     let build_info = BuildInfo {
         commit: commit_info,

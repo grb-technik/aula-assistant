@@ -13,7 +13,7 @@ interface StartupDataType {
             date: string;
             short_id: string;
             long_id: string;
-        };
+        } | null;
     };
     show_appbar: boolean;
 }

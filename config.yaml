@@ -1,5 +1,5 @@
 defaults:
-  tablet_mode: true
+  tablet_mode: false
 
 security:
   advanced_pin: "0000"

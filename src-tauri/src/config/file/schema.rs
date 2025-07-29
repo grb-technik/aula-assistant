@@ -19,7 +19,7 @@ impl Schema {
 impl Default for Schema {
     fn default() -> Self {
         Schema {
-            defaults: Defaults { tablet_mode: true },
+            defaults: Defaults { tablet_mode: false },
             security: Security {
                 advanced_pin: "1234".to_string(),
             },
