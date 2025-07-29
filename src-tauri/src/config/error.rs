@@ -1,10 +1,27 @@
 use std::{fmt::Display, path::PathBuf};
 
+#[derive(PartialEq, Eq)]
+pub enum ConfigErrorKind {
+    YamlError,
+    IoError,
+    FileNotFound,
+}
+
 #[derive(Debug)]
 pub enum ConfigError {
     YamlError(serde_yaml::Error),
     IoError(std::io::Error),
     FileNotFound(PathBuf),
+}
+
+impl ConfigError {
+    pub fn kind(&self) -> ConfigErrorKind {
+        match self {
+            ConfigError::YamlError(_) => ConfigErrorKind::YamlError,
+            ConfigError::IoError(_) => ConfigErrorKind::IoError,
+            ConfigError::FileNotFound(_) => ConfigErrorKind::FileNotFound,
+        }
+    }
 }
 
 impl Display for ConfigError {

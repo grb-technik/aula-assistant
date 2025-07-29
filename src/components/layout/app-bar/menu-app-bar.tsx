@@ -17,6 +17,12 @@ import {
 import { TraficLights } from "./trafic-lights";
 import { useWindow } from "@/contexts/window";
 import { useEffect, useState } from "react";
+import { message } from "@tauri-apps/plugin-dialog";
+import * as os_info from "@tauri-apps/plugin-os";
+import { tryCatch } from "@/lib/try-catch";
+import { error } from "@tauri-apps/plugin-log";
+import { toast } from "sonner";
+import { invoke } from "@tauri-apps/api/core";
 
 export function MenuAppBar() {
     const { isWindowMaximized, minimizeWindow, maximizeWindow, unmaximizeWindow, toggleMaximizeWindow, closeWindow } =
@@ -32,6 +38,34 @@ export function MenuAppBar() {
             maximizeWindow();
             setIsFullscreen(true);
         }
+    };
+
+    const showAboutDialog = () => {
+        tryCatch(invoke<string[]>("get_build_info")).then((buildInfo) => {
+            if (buildInfo.error) {
+                error(`failed to get build info: ${buildInfo.error}`);
+                toast.error("Failed to get build info.");
+                return;
+            }
+
+            const [_commit_date, _commit_short_id, commit_long_id, build_timestamp_utc, version] = buildInfo.data;
+
+            tryCatch(
+                message(
+                    `Aula Assistant
+Version: ${version}
+Commit: ${commit_long_id}
+Date: ${build_timestamp_utc}
+OS: ${os_info.platform()} ${os_info.arch()} ${os_info.version()}`,
+                    { title: "Aula Assistant", kind: "info" },
+                ),
+            ).then((result) => {
+                if (result.error) {
+                    error(`failed to show about dialog: ${result.error}`);
+                    toast.error("Failed to show about dialog.");
+                }
+            });
+        });
     };
 
     useEffect(() => {
@@ -114,6 +148,16 @@ export function MenuAppBar() {
                         <a target="_blank" href="https://github.com/grb-technik/aula_assistant/blob/master/LICENSE.txt">
                             <MenubarItem>View License</MenubarItem>
                         </a>
+
+                        <MenubarSeparator />
+
+                        <a target="_blank" href="https://github.com/grb-technik/aula_assistant/releases">
+                            <MenubarItem>Check for Updates</MenubarItem>
+                        </a>
+
+                        <MenubarSeparator />
+
+                        <MenubarItem onClick={showAboutDialog}>About</MenubarItem>
                     </MenubarContent>
                 </MenubarMenu>
             </Menubar>

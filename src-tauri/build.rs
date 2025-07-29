@@ -1,7 +1,9 @@
 fn main() {
-    let (commit_date, commit_short_id, _) = commit_information();
+    let (commit_date, commit_short_id, commit_long_id) = commit_information();
+    println!("cargo:rustc-env=BUILD_TIMESTAMP_UTC={}", chrono::Utc::now().to_rfc3339());
     println!("cargo:rustc-env=LAST_COMMIT_DATE={}", commit_date.trim());
     println!("cargo:rustc-env=LAST_COMMIT_ID={}", commit_short_id.trim());
+    println!("cargo:rustc-env=LAST_COMMIT_ID_LONG={}", commit_long_id.trim());
     tauri_build::build()
 }
 

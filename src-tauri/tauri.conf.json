@@ -20,7 +20,9 @@
                 "focus": true,
                 "theme": "Dark",
                 "decorations": false,
-                "tabbingIdentifier": "aula_assistant"
+                "tabbingIdentifier": "aula_assistant",
+                "devtools": false,
+                "browserExtensionsEnabled": false
             }
         ],
         "security": {
