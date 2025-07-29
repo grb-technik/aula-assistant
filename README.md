@@ -6,10 +6,19 @@ while also offering advanced controls for technical staff.
 
 ## Table of Contents
 
+- [Features](#features)
+- [Installation](#installation)
 - [Build from Source](#build-from-source)
-    - [Prequisites](#prequisites)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Features
+
+<!-- TODO -->
+
+## Installation
+
+<!-- TODO -->
 
 ## Build from Source
 
@@ -24,6 +33,7 @@ while also offering advanced controls for technical staff.
 
 > [!NOTE]
 > By default, the `pnpm tauri build` command will create a binary in release mode and the following installers:
+>
 > - msi (Windows)
 > - deb (Linux)
 
