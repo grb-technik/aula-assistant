@@ -22,10 +22,10 @@ while also offering advanced controls for technical staff.
 
 ### Steps
 
->[!INFO]
->By default, the `pnpm tauri build` command will create a binary in release mode and the following installers:
->- msi (Windows)
->- deb (Linux)
+> [!INFO]
+> By default, the `pnpm tauri build` command will create a binary in release mode and the following installers:
+> - msi (Windows)
+> - deb (Linux)
 
 ```bash
 git clone https://github.com/grb-technik/aula_assistant.git
