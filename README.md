@@ -22,7 +22,7 @@ while also offering advanced controls for technical staff.
 
 ### Steps
 
-> [!INFO]
+> [!NOTE]
 > By default, the `pnpm tauri build` command will create a binary in release mode and the following installers:
 > - msi (Windows)
 > - deb (Linux)
