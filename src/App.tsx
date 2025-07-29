@@ -1,45 +1,40 @@
-import { MenuAppBar } from "./components/layout/app-bar/menu-app-bar";
 import { Toaster } from "@/components/ui/sonner";
 import { WindowProvider } from "@/contexts/window";
+import { StartupDataProvider, useStartupData } from "./contexts/startup-data";
+import { MenuAppBar } from "./components/layout/app-bar";
 import { cn } from "./lib/utils";
-import { invoke } from "@tauri-apps/api/core";
-import { useEffect, useState } from "react";
-import { tryCatch } from "./lib/try-catch";
-import { toast } from "sonner";
-import { info, error } from "@tauri-apps/plugin-log";
 import { Views } from "./views";
 
 import "./styles/global.css";
 
 export default function App() {
-    const [showAppBar, setShowAppBar] = useState<boolean>(false);
+    return (
+        <>
+            <StartupDataProvider>
+                <WindowProvider>
+                    <AppComponent />
+                </WindowProvider>
+            </StartupDataProvider>
 
-    useEffect(() => {
-        tryCatch(invoke<boolean>("get_show_appbar")).then((result) => {
-            if (result.error) {
-                error(
-                    `failed to retrieve app bar visibility setting: failed to invoke get_show_appbar: ${result.error.message}`,
-                );
-                toast.error("Failed to retrieve app bar visibility setting.");
-                return;
-            }
+            <Toaster richColors />
+        </>
+    );
+}
 
-            setShowAppBar(Boolean(result.data) ?? false);
-            info(`app bar visibility set to: ${result.data}`);
-        });
-    }, [invoke, setShowAppBar]);
+function AppComponent() {
+    const startUpData = useStartupData();
 
     return (
         <>
-            <WindowProvider>
-                {showAppBar ? <MenuAppBar /> : null}
+            {startUpData.show_appbar ? <MenuAppBar /> : null}
 
-                <main className={cn("w-full", showAppBar ? "mt-10 min-h-[calc(100dvh-40px)]" : "mt-0 min-h-dvh")}>
-                    <Views />
-                </main>
-            </WindowProvider>
-
-            <Toaster richColors />
+            <main
+                className={cn(
+                    "w-full",
+                    startUpData.show_appbar ? "mt-10 min-h-[calc(100dvh-40px)]" : "mt-0 min-h-dvh",
+                )}>
+                <Views />
+            </main>
         </>
     );
 }

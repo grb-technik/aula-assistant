@@ -23,10 +23,12 @@ import { tryCatch } from "@/lib/try-catch";
 import { error } from "@tauri-apps/plugin-log";
 import { toast } from "sonner";
 import { invoke } from "@tauri-apps/api/core";
+import { useStartupData } from "@/contexts/startup-data";
 
 export function MenuAppBar() {
     const { isWindowMaximized, minimizeWindow, maximizeWindow, unmaximizeWindow, toggleMaximizeWindow, closeWindow } =
         useWindow();
+    const startUpData = useStartupData();
 
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
@@ -41,30 +43,20 @@ export function MenuAppBar() {
     };
 
     const showAboutDialog = () => {
-        tryCatch(invoke<string[]>("get_build_info")).then((buildInfo) => {
-            if (buildInfo.error) {
-                error(`failed to get build info: ${buildInfo.error}`);
-                toast.error("Failed to get build info.");
-                return;
-            }
-
-            const [_commit_date, _commit_short_id, commit_long_id, build_timestamp_utc, version] = buildInfo.data;
-
-            tryCatch(
-                message(
-                    `Aula Assistant
-Version: ${version}
-Commit: ${commit_long_id}
-Date: ${build_timestamp_utc}
+        tryCatch(
+            message(
+                `Aula Assistant
+Version: ${startUpData.build.version}
+Commit: ${startUpData.build.commit.long_id}
+Date: ${startUpData.build.date}
 OS: ${os_info.platform()} ${os_info.arch()} ${os_info.version()}`,
-                    { title: "Aula Assistant", kind: "info" },
-                ),
-            ).then((result) => {
-                if (result.error) {
-                    error(`failed to show about dialog: ${result.error}`);
-                    toast.error("Failed to show about dialog.");
-                }
-            });
+                { title: "Aula Assistant", kind: "info" },
+            ),
+        ).then((result) => {
+            if (result.error) {
+                error(`failed to show about dialog: ${result.error}`);
+                toast.error("Failed to show about dialog.");
+            }
         });
     };
 

@@ -112,9 +112,8 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            commands::get_show_appbar,
-            commands::check_advanced_pin,
-            commands::get_build_info,
+            commands::startup_data::get_startup_data,
+            commands::security::check_advanced_pin
         ])
         .run(tauri::generate_context!())
 }
