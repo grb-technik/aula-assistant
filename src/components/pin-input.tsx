@@ -96,6 +96,11 @@ function PinInputButton({
         <div className="bg-background h-full w-full rounded-md">
             <button
                 disabled={disabled}
+                onMouseDown={(e) => {
+                    if (e.button === 0) return;
+                    e.preventDefault();
+                    e.currentTarget.click();
+                }}
                 onClick={onClick}
                 className={cn(
                     "bg-secondary active:bg-primary/40 hover:bg-secondary/80 focus-visible:border-ring focus-visible:ring-ring/50 h-full w-full rounded-md border-2 font-medium transition-all duration-100 ease-in outline-none focus-visible:border-0 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50",
