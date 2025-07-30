@@ -1,7 +1,6 @@
 // crate to parse the configuration file of the application
 mod fs;
 mod schema;
-pub mod yaml;
 
-pub use fs::read_config_file;
-pub use schema::Schema;
+pub(crate) use fs::{parse_yaml, read_config_file, resolve_config_file_path};
+pub(crate) use schema::FileConfig;

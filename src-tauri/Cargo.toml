@@ -1,11 +1,11 @@
 [package]
-name = "aula_assistant"
+name = "aula-assistant"
 version = "0.1.0"
 edition = "2024"
 publish = false
 description = "A user-friendly media control system used in the Gymnasium Riedberg auditorium."
-repository = "https://github.com/grb-technik/aula_assistant"
-readme = "https://github.com/grb-technik/aula_assistant/blob/master/README.md"
+repository = "https://github.com/grb-technik/aula-assistant"
+readme = "https://github.com/grb-technik/aula-assistant/blob/master/README.md"
 authors = ["Christian Fuchte <christian.fuchte@grb-online.net>"]
 
 [lib]

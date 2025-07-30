@@ -2,7 +2,7 @@ use crate::{
     config::RuntimeConfig,
     state::{AppStateBuilder, TakeFrom},
 };
-use std::{path::PathBuf, sync::Mutex};
+use std::sync::Mutex;
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
@@ -11,22 +11,21 @@ pub mod config;
 mod state;
 
 pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
-    let mut apb = AppStateBuilder::new();
-    apb.take_from(&config);
-
     tauri::Builder::default()
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             let webview_window = app.get_webview_window("main");
 
-            if webview_window.is_none() {
-                log::error!("no webview window found with the label 'main'.");
-                return;
-            }
-
-            if webview_window.unwrap().set_focus().is_err() {
-                log::error!("failed to set focus on the webview window.");
+            match webview_window {
+                Some(window) => {
+                    if window.set_focus().is_err() {
+                        log::error!("failed to set focus on the webview window.");
+                    }
+                }
+                None => {
+                    log::warn!("no webview window found with the label 'main'.");
+                }
             }
         }))
         .plugin(
@@ -45,66 +44,14 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
         )
         .plugin(tauri_plugin_opener::init())
         .setup(move |app| {
-            let mut config_path;
+            let cfg = load_app_config(&config, app).map_err(|e| {
+                log::error!("failed to load app config: {}", e);
+                e
+            })?;
 
-            if config.config_file_path().is_some() {
-                config_path = config.config_file_path().unwrap().to_path_buf();
-            } else {
-                config_path = match app.path().app_config_dir() {
-                    Ok(path) => path,
-                    Err(e) => {
-                        log::error!("failed to get app config directory: {}", e);
-                        return Err(e.into());
-                    }
-                };
-            }
-
-            if config_path == PathBuf::from(".") {
-                config_path = std::env::current_dir().map_err(|e| {
-                    log::error!("failed to get current directory: {}", e);
-                    e
-                })?;
-            }
-
-            if config_path.is_relative() {
-                config_path = std::env::current_dir()
-                    .map_err(|e| {
-                        log::error!("failed to get current directory: {}", e);
-                        e
-                    })?
-                    .join(config_path);
-            }
-
-            if !config_path.ends_with("config.yaml") {
-                config_path = config_path.join("config.yaml");
-            }
-
-            log::info!("using config path: {}", config_path.display());
-
-            let config_file_content = config::read_config_file(config_path);
-
-            let cfg;
-
-            if let Err(e) = config_file_content {
-                if e.kind() == config::ConfigErrorKind::FileNotFound {
-                    log::info!("empty config file found, using default settings.");
-                    cfg = config::Schema::default();
-                } else {
-                    log::error!("failed to read config file: {}", e);
-                    return Err(e.into());
-                }
-            } else if let Some(content) = config_file_content.unwrap() {
-                cfg = config::yaml::parse_yaml(&content)
-                    .map_err(|e| {
-                        log::error!("failed to parse YAML config: {}", e);
-                        e
-                    })
-                    .unwrap();
-            } else {
-                log::info!("empty config file found, using default settings.");
-                cfg = config::Schema::default();
-            }
-
+            let mut apb = AppStateBuilder::new();
+            // !!! do not change order !!!
+            apb.take_from(&config);
             apb.take_from(&cfg);
 
             app.manage(Mutex::new(apb.build()));
@@ -116,4 +63,27 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
             commands::security::check_advanced_pin
         ])
         .run(tauri::generate_context!())
+}
+
+fn load_app_config(
+    config: &RuntimeConfig,
+    app: &tauri::App,
+) -> Result<config::FileConfig, config::Error> {
+    let config_path =
+        config::resolve_config_file_path(app.path().app_config_dir(), config.config_file_path())?;
+
+    log::info!("using config path: {}", config_path.display());
+
+    let config_file_content = config::read_config_file(config_path)?;
+
+    match config_file_content {
+        Some(content) => {
+            let parsed = config::parse_yaml(&content)?;
+            Ok(parsed)
+        }
+        None => {
+            log::info!("empty config file found, using default settings.");
+            Ok(config::FileConfig::default())
+        }
+    }
 }

@@ -1,41 +1,26 @@
 use std::{fmt::Display, path::PathBuf};
 
-#[derive(PartialEq, Eq)]
-pub enum ConfigErrorKind {
-    YamlError,
-    IoError,
-    FileNotFound,
-}
-
 #[derive(Debug)]
-pub enum ConfigError {
+pub enum Error {
     YamlError(serde_yaml::Error),
     IoError(std::io::Error),
     FileNotFound(PathBuf),
+    AppDirNotFound(tauri::Error),
 }
 
-impl ConfigError {
-    pub fn kind(&self) -> ConfigErrorKind {
-        match self {
-            ConfigError::YamlError(_) => ConfigErrorKind::YamlError,
-            ConfigError::IoError(_) => ConfigErrorKind::IoError,
-            ConfigError::FileNotFound(_) => ConfigErrorKind::FileNotFound,
-        }
-    }
-}
-
-impl Display for ConfigError {
+impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                ConfigError::YamlError(e) => format!("YAML error: {}", e),
-                ConfigError::IoError(e) => format!("IO error: {}", e),
-                ConfigError::FileNotFound(path) => format!("File not found: {}", path.display()),
+                Error::YamlError(e) => format!("yaml error: {}", e),
+                Error::IoError(e) => format!("io error: {}", e),
+                Error::FileNotFound(path) => format!("file not found: {}", path.display()),
+                Error::AppDirNotFound(e) => format!("app directory not found: {}", e),
             }
         )
     }
 }
 
-impl std::error::Error for ConfigError {}
+impl std::error::Error for Error {}

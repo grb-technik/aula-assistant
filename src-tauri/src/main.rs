@@ -28,18 +28,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let commit_id = std::env::var("LAST_COMMIT_ID").ok();
         let commit_date = std::env::var("LAST_COMMIT_DATE").ok();
 
-        if commit_id.is_none() || commit_date.is_none() {
-            println!("{} {}", crate_name!(), crate_version!());
-            return Ok(());
+        match (commit_id, commit_date) {
+            (Some(id), Some(date)) => {
+                println!("{} {} ({} {})", crate_name!(), crate_version!(), id, date,);
+            }
+            _ => {
+                println!("{} {}", crate_name!(), crate_version!());
+            }
         }
-
-        println!(
-            "{} {} ({} {})",
-            crate_name!(),
-            crate_version!(),
-            commit_id.unwrap(),
-            commit_date.unwrap(),
-        );
 
         return Ok(());
     }

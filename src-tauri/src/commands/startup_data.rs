@@ -37,15 +37,17 @@ pub fn get_startup_data(state: State<'_, Mutex<AppState>>) -> StartupData {
     let version = std::env::var("CARGO_PKG_VERSION").expect("CARGO_PKG_VERSION not set");
 
     let commit_info: Option<CommitInfo>;
-
-    if commit_date.is_none() || commit_short_id.is_none() || commit_long_id.is_none() {
-        commit_info = None;
-    } else {
-        commit_info = Some(CommitInfo {
-            date: commit_date.unwrap(),
-            short_id: commit_short_id.unwrap(),
-            long_id: commit_long_id.unwrap(),
-        });
+    match (commit_date, commit_short_id, commit_long_id) {
+        (Some(date), Some(short_id), Some(long_id)) => {
+            commit_info = Some(CommitInfo {
+                date,
+                short_id,
+                long_id,
+            });
+        }
+        _ => {
+            commit_info = None;
+        }
     }
 
     let build_info = BuildInfo {

@@ -123,25 +123,25 @@ OS: ${os_info.platform()} ${os_info.arch()} ${os_info.version()}`,
                         </a>
                         <a
                             target="_blank"
-                            href="https://github.com/grb-technik/aula_assistant/blob/master/CHANGELOG.md">
+                            href="https://github.com/grb-technik/aula-assistant/blob/master/CHANGELOG.md">
                             <MenubarItem>Show Release Notes</MenubarItem>
                         </a>
 
                         <MenubarSeparator />
 
-                        <a target="_blank" href="https://github.com/grb-technik/aula_assistant/issues/new/choose">
+                        <a target="_blank" href="https://github.com/grb-technik/aula-assistant/issues/new/choose">
                             <MenubarItem>Report Issue</MenubarItem>
                         </a>
 
                         <MenubarSeparator />
 
-                        <a target="_blank" href="https://github.com/grb-technik/aula_assistant/blob/master/LICENSE.txt">
+                        <a target="_blank" href="https://github.com/grb-technik/aula-assistant/blob/master/LICENSE.txt">
                             <MenubarItem>View License</MenubarItem>
                         </a>
 
                         <MenubarSeparator />
 
-                        <a target="_blank" href="https://github.com/grb-technik/aula_assistant/releases">
+                        <a target="_blank" href="https://github.com/grb-technik/aula-assistant/releases">
                             <MenubarItem>Check for Updates</MenubarItem>
                         </a>
 

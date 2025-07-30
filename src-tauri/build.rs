@@ -1,14 +1,13 @@
 fn main() {
     let git_info = commit_information();
 
-    if git_info.is_some() {
-        let (commit_date, commit_short_id, commit_long_id) = git_info.unwrap();
-        println!("cargo:rustc-env=LAST_COMMIT_DATE={}", commit_date.trim());
-        println!("cargo:rustc-env=LAST_COMMIT_ID={}", commit_short_id.trim());
-        println!(
-            "cargo:rustc-env=LAST_COMMIT_ID_LONG={}",
-            commit_long_id.trim()
-        );
+    match git_info {
+        Some((date, short_id, long_id)) => {
+            println!("cargo:rustc-env=LAST_COMMIT_DATE={}", date.trim());
+            println!("cargo:rustc-env=LAST_COMMIT_ID={}", short_id.trim());
+            println!("cargo:rustc-env=LAST_COMMIT_ID_LONG={}", long_id.trim());
+        }
+        _ => {}
     }
 
     println!(

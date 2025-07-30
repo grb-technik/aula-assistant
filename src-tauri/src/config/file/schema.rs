@@ -1,12 +1,12 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug, Clone, Serialize)]
-pub struct Schema {
+pub struct FileConfig {
     security: Security,
     defaults: Defaults,
 }
 
-impl Schema {
+impl FileConfig {
     pub fn advanced_pin(&self) -> &str {
         &self.security.advanced_pin()
     }
@@ -16,9 +16,9 @@ impl Schema {
     }
 }
 
-impl Default for Schema {
+impl Default for FileConfig {
     fn default() -> Self {
-        Schema {
+        FileConfig {
             defaults: Defaults { tablet_mode: false },
             security: Security {
                 advanced_pin: "1234".to_string(),

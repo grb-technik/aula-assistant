@@ -38,8 +38,8 @@ while also offering advanced controls for technical staff.
 > - deb (Linux)
 
 ```bash
-git clone https://github.com/grb-technik/aula_assistant.git
-cd aula_assistant
+git clone https://github.com/grb-technik/aula-assistant.git
+cd aula-assistant
 pnpm install
 pnpm tauri build
 # binary and installers can be found at `src-tauri/target/release`

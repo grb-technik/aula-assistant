@@ -1,4 +1,4 @@
-use crate::config::{RuntimeConfig, Schema};
+use crate::config::{RuntimeConfig, FileConfig};
 
 pub struct AppStateBuilder {
     show_appbar: Option<bool>,
@@ -41,8 +41,8 @@ impl TakeFrom<&RuntimeConfig> for AppStateBuilder {
     }
 }
 
-impl TakeFrom<&Schema> for AppStateBuilder {
-    fn take_from(&mut self, config: &Schema) {
+impl TakeFrom<&FileConfig> for AppStateBuilder {
+    fn take_from(&mut self, config: &FileConfig) {
         if self.show_appbar.is_none() {
             self.show_appbar(!config.tablet_mode_default());
         }

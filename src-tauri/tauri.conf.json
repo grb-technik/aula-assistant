@@ -1,6 +1,6 @@
 {
     "$schema": "https://schema.tauri.app/config/2",
-    "productName": "aula_assistant",
+    "productName": "aula-assistant",
     "version": "0.1.0",
     "identifier": "com.github.grb-technik.aula-assistant",
     "build": {
@@ -20,7 +20,7 @@
                 "focus": true,
                 "theme": "Dark",
                 "decorations": false,
-                "tabbingIdentifier": "aula_assistant",
+                "tabbingIdentifier": "grb-technik.aula-assistant",
                 "devtools": false,
                 "browserExtensionsEnabled": false
             }
@@ -34,7 +34,7 @@
         "publisher": "ATec Gymnasium Riedberg",
         "license": "GNU GPLv3",
         "category": "Utility",
-        "homepage": "https://github.com/grb-technik/aula_assistant",
+        "homepage": "https://github.com/grb-technik/aula-assistant",
         "licenseFile": "../LICENSE.txt",
         "active": true,
         "targets": ["msi", "deb"],
