@@ -74,7 +74,13 @@ fn load_app_config(
 
     log::info!("using config path: {}", config_path.display());
 
-    let config_file_content = config::read_config_file(config_path)?;
+    let config_file_content = match config::read_config_file(config_path) {
+        Ok(content) => content,
+        Err(e) => match e {
+            config::Error::FileNotFound(_) => None,
+            _ => return Err(e),
+        },
+    };
 
     match config_file_content {
         Some(content) => {
