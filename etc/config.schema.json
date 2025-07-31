@@ -15,7 +15,8 @@
                     "description": "Enable tablet mode (no app bar, no window controls)"
                 }
             },
-            "required": ["tablet_mode"]
+            "required": ["tablet_mode"],
+            "additionalProperties": false
         },
         "security": {
             "description": "Security settings. Note: This is not a security feature but rather a convenience feature to prevent non-technical users from being overwhelmed by all the features.",
@@ -27,7 +28,131 @@
                     "description": "Pin to access advanced features. Note: This is not a security feature"
                 }
             },
-            "required": ["advanced_pin"]
+            "required": ["advanced_pin"],
+            "additionalProperties": false
+        },
+        "lighting": {
+            "type": "object",
+            "properties": {
+                "artnet": {
+                    "type": "object",
+                    "properties": {
+                        "bind": {
+                            "type": "string",
+                            "default": "0.0.0.0:6454"
+                        },
+                        "broadcast": {
+                            "type": "boolean",
+                            "default": true
+                        },
+                        "target": {
+                            "type": "string",
+                            "default": "255.255.255.255:6454"
+                        },
+                        "universe": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 32768,
+                            "default": 0
+                        }
+                    },
+                    "required": ["bind", "broadcast", "target", "universe"],
+                    "additionalProperties": false
+                },
+                "patch": {
+                    "type": "object",
+                    "properties": {
+                        "types": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "channels": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "required": ["name", "channels"],
+                                "additionalProperties": false
+                            },
+                            "default": []
+                        },
+                        "patched": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "channel": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 512
+                                    }
+                                },
+                                "required": ["name", "type", "channel"],
+                                "additionalProperties": false
+                            },
+                            "default": []
+                        }
+                    },
+                    "required": ["types", "patched"],
+                    "additionalProperties": false
+                },
+                "scenes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": ["on", "off", "default"],
+                                "default": "default"
+                            },
+                            "sets": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "fixture": {
+                                            "type": "string"
+                                        },
+                                        "channel": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 255
+                                        }
+                                    },
+                                    "required": ["fixture", "channel", "value"],
+                                    "additionalProperties": false
+                                }
+                            }
+                        },
+                        "required": ["name", "sets"],
+                        "additionalProperties": false
+                    },
+                    "default": []
+                }
+            },
+            "required": ["artnet", "patch", "scenes"],
+            "additionalProperties": false
         }
-    }
+    },
+    "required": ["defaults", "security", "lighting"],
+    "additionalProperties": false
 }

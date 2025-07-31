@@ -49,6 +49,11 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
                 e
             })?;
 
+            cfg.validate().map_err(|e| {
+                log::error!("config validation failed: {:?}", e);
+                e
+            })?;
+
             let mut apb = AppStateBuilder::new();
             // !!! do not change order !!!
             apb.take_from(&config);

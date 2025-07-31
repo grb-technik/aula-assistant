@@ -5,3 +5,34 @@ defaults:
 
 security:
     advanced_pin: "0000"
+
+lighting:
+    artnet:
+        bind: 0.0.0.0:6454 # bind address for socket
+        broadcast: true # broadcast udp
+        target: 255.255.255.255:6454 # target address for socket
+        universe: 0 # just one universe for now
+    patch:
+        types:
+            - name: spot # fixture type name
+              channels: # order matters
+                      - red
+                      - green
+                      - blue
+        patched:
+            - name: spot1 # label
+              type: spot # fixture type name
+              channel: 1 # starting dmx channel
+    scenes:
+        - name: Blackout # scene name
+          type: default #  (on, off, default) default = "default" (just for ui and in future use for auto-triggering - default = no action)
+          sets:
+              - fixture: spot1
+                channel: red
+                value: 255
+              - fixture: spot1
+                channel: green
+                value: 255
+              - fixture: spot1
+                channel: blue
+                value: 0
