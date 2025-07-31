@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=file:///C:/dev/ATec/aula_assistant/etc/config.schema.json
+
 defaults:
     tablet_mode: false
 

@@ -74,22 +74,29 @@ fn load_app_config(
 
     log::info!("using config path: {}", config_path.display());
 
-    let config_file_content = match config::read_config_file(config_path) {
-        Ok(content) => content,
+    let reader = match config::open_config_file_as_reader(config_path) {
+        Ok(reader) => Some(reader),
         Err(e) => match e {
-            config::Error::FileNotFound(_) => None,
-            _ => return Err(e),
+            config::Error::FileNotFound(_) => {
+                log::info!("config file not found, using default settings.");
+                None
+            }
+            _ => {
+                log::error!("failed to open config file: {}", e);
+                return Err(e);
+            }
         },
     };
 
-    match config_file_content {
-        Some(content) => {
-            let parsed = config::parse_yaml(&content)?;
-            Ok(parsed)
-        }
-        None => {
-            log::info!("empty config file found, using default settings.");
-            Ok(config::FileConfig::default())
+    if reader.is_none() {
+        return Ok(config::FileConfig::default());
+    }
+
+    match config::parse_yaml(reader.unwrap()) {
+        Ok(parsed) => Ok(parsed),
+        Err(e) => {
+            log::info!("failed to parse config file: {}", e);
+            Err(e)
         }
     }
 }

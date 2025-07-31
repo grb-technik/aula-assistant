@@ -1,0 +1,33 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://aula-assistant.teschnik.de/config.schema.json",
+    "title": "aula-assistant/config.yaml",
+    "description": "Schema for the Aula Assistant configuration file",
+    "type": "object",
+    "properties": {
+        "defaults": {
+            "description": "Defaults to use if not specified otherwise via command line arguments",
+            "type": "object",
+            "properties": {
+                "tablet_mode": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable tablet mode (no app bar, no window controls)"
+                }
+            },
+            "required": ["tablet_mode"]
+        },
+        "security": {
+            "description": "Security settings. Note: This is not a security feature but rather a convenience feature to prevent non-technical users from being overwhelmed by all the features.",
+            "type": "object",
+            "properties": {
+                "advanced_pin": {
+                    "type": "string",
+                    "default": "1234",
+                    "description": "Pin to access advanced features. Note: This is not a security feature"
+                }
+            },
+            "required": ["advanced_pin"]
+        }
+    }
+}
