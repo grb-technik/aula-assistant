@@ -25,7 +25,7 @@ lighting:
               channel: 1 # starting dmx channel
     scenes:
         - name: Blackout # scene name
-          type: default #  (on, off, default) default = "default" (just for ui and in future use for auto-triggering - default = no action)
+          type: default #  (on, off, default) (just for ui and in future use for auto-triggering - default = no action)
           sets:
               - fixture: spot1
                 channel: red

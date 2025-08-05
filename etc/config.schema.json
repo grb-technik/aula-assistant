@@ -118,8 +118,7 @@
                             },
                             "type": {
                                 "type": "string",
-                                "enum": ["on", "off", "default"],
-                                "default": "default"
+                                "enum": ["on", "off", "default"]
                             },
                             "sets": {
                                 "type": "array",
@@ -143,7 +142,7 @@
                                 }
                             }
                         },
-                        "required": ["name", "sets"],
+                        "required": ["name", "sets", "type"],
                         "additionalProperties": false
                     },
                     "default": []

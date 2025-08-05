@@ -1,7 +1,15 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug)]
-pub enum FileConfigValidationError {}
+pub enum FileConfigValidationError {
+    SecurityAdvancedPinInvalid(String),
+    ArtnetBindInvalid(String),
+    ArtnetTargetInvalid(String),
+    ArtnetUniverseInvalid(String),
+    PatchedFixtureTypeInvalid(String),
+    SceneTypeInvalid(String),
+    SceneSetInvalid(String)
+}
 
 impl std::fmt::Display for FileConfigValidationError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -9,7 +17,27 @@ impl std::fmt::Display for FileConfigValidationError {
             f,
             "{}",
             match self {
-                _ => format!("error validating file config"),
+                FileConfigValidationError::SecurityAdvancedPinInvalid(str) => {
+                    format!("security.advanced_pin is invalid: {}", str)
+                }
+                FileConfigValidationError::ArtnetBindInvalid(str) => {
+                    format!("lighting.artnet.bind is invalid: {}", str)
+                }
+                FileConfigValidationError::ArtnetTargetInvalid(str) => {
+                    format!("lighting.artnet.target is invalid: {}", str)
+                }
+                FileConfigValidationError::ArtnetUniverseInvalid(str) => {
+                    format!("lighting.artnet.universe is invalid: {}", str)
+                }
+                FileConfigValidationError::PatchedFixtureTypeInvalid(str) => {
+                    format!("lighting.patch.patched fixture type is invalid: {}", str)
+                }
+                FileConfigValidationError::SceneTypeInvalid(str) => {
+                    format!("lighting.scenes scene type is invalid: {}", str)
+                }
+                FileConfigValidationError::SceneSetInvalid(str) => {
+                    format!("lighting.scenes scene set is invalid: {}", str)
+                }
             }
         )
     }
@@ -35,14 +63,110 @@ impl FileConfig {
     }
 
     pub fn validate(&self) -> Result<(), FileConfigValidationError> {
-        // TODO: impl
-        // - advanced_pin may only contain digits
-        // - artnet bind must be a valid IP address
-        // - artnet target must be a valid IP address
-        // - artnet universe must be < 2^15 (even if stored as u16)
-        // - patched fixtures must reference valid fixture types
-        // - scenes must have valid sets
-        // - scenes must have a valid type ("on", "off", "default")
+        if !self.security.advanced_pin().chars().all(char::is_numeric) {
+            return Err(FileConfigValidationError::SecurityAdvancedPinInvalid(
+                "advanced_pin must only contain digits".to_string(),
+            ));
+        } else if self.security.advanced_pin().is_empty() {
+            return Err(FileConfigValidationError::SecurityAdvancedPinInvalid(
+                "advanced_pin needs to be defined".to_string(),
+            ));
+        }
+
+        if !self
+            .lighting
+            .artnet()
+            .bind()
+            .parse::<std::net::SocketAddr>()
+            .is_ok()
+        {
+            return Err(FileConfigValidationError::ArtnetBindInvalid(
+                "artnet bind must be a valid IP:PORT socket address".to_string(),
+            ));
+        }
+
+        if !self
+            .lighting
+            .artnet()
+            .target()
+            .parse::<std::net::SocketAddr>()
+            .is_ok()
+        {
+            return Err(FileConfigValidationError::ArtnetTargetInvalid(
+                "artnet target must be a valid IP:PORT socket address".to_string(),
+            ));
+        }
+
+        if self.lighting.artnet().universe > 32_768 {
+            return Err(FileConfigValidationError::ArtnetUniverseInvalid(
+                "artnet universe must be less than 32768".to_string(),
+            ));
+        }
+
+        for fixture in self.lighting.patch().patched() {
+            if !self
+                .lighting
+                .patch()
+                .types()
+                .iter()
+                .any(|t| t.name() == fixture.ftype())
+            {
+                return Err(FileConfigValidationError::PatchedFixtureTypeInvalid(
+                    format!(
+                        "Patched fixture '{}' references an unknown fixture type '{}'",
+                        fixture.name(),
+                        fixture.ftype()
+                    ),
+                ));
+            }
+        }
+
+        for scene in self.lighting.scenes() {
+            if !["on", "off", "default"].contains(&scene.ftype()) {
+                return Err(FileConfigValidationError::SceneTypeInvalid(
+                    format!(
+                        "Scene '{}' has an invalid type '{}', must be 'on', 'off', or 'default'",
+                        scene.name(),
+                        scene.ftype()
+                    ),
+                ));
+            }
+
+            for set in scene.sets() {
+                if !self
+                    .lighting
+                    .patch()
+                    .patched()
+                    .iter()
+                    .any(|f| f.name() == set.fixture())
+                {
+                    return Err(FileConfigValidationError::SceneSetInvalid(
+                        format!(
+                            "Scene '{}' references an unknown fixture '{}'",
+                            scene.name(),
+                            set.fixture()
+                        ),
+                    ));
+                }
+
+                if !self
+                    .lighting
+                    .patch()
+                    .types()
+                    .iter()
+                    .any(|t| t.name() == set.channel())
+                {
+                    return Err(FileConfigValidationError::SceneSetInvalid(
+                        format!(
+                            "Scene '{}' references an unknown channel '{}'",
+                            scene.name(),
+                            set.channel()
+                        ),
+                    ));
+                }
+            }
+        }
+
         Ok(())
     }
 }
@@ -91,7 +215,7 @@ pub struct Security {
 
 impl Security {
     pub fn advanced_pin(&self) -> &str {
-        &self.advanced_pin
+        &self.advanced_pin.trim()
     }
 }
 
@@ -182,7 +306,8 @@ impl FixtureType {
 #[serde(deny_unknown_fields)]
 pub struct PatchedFixture {
     name: String,
-    r#type: String,
+    #[serde(rename = "type")]
+    ftype: String,
     channel: u8,
 }
 
@@ -191,8 +316,8 @@ impl PatchedFixture {
         &self.name
     }
 
-    pub fn r#type(&self) -> &str {
-        &self.r#type
+    pub fn ftype(&self) -> &str {
+        &self.ftype
     }
 
     pub fn channel(&self) -> u8 {
@@ -204,7 +329,8 @@ impl PatchedFixture {
 #[serde(deny_unknown_fields)]
 pub struct Scene {
     name: String,
-    r#type: String, // "on", "off", "default"
+    #[serde(rename = "type")]
+    ftype: String, // "on", "off", "default"
     sets: Vec<Set>,
 }
 
@@ -213,8 +339,8 @@ impl Scene {
         &self.name
     }
 
-    pub fn r#type(&self) -> &str {
-        &self.r#type
+    pub fn ftype(&self) -> &str {
+        &self.ftype
     }
 
     pub fn sets(&self) -> &[Set] {
