@@ -59,7 +59,9 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
             apb.take_from(&config);
             apb.take_from(&cfg);
 
-            app.manage(Mutex::new(apb.build()));
+            let state = apb.build();
+
+            app.manage(Mutex::new(state));
 
             Ok(())
         })

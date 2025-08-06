@@ -8,7 +8,7 @@ pub enum FileConfigValidationError {
     ArtnetUniverseInvalid(String),
     PatchedFixtureTypeInvalid(String),
     SceneTypeInvalid(String),
-    SceneSetInvalid(String)
+    SceneSetInvalid(String),
 }
 
 impl std::fmt::Display for FileConfigValidationError {
@@ -62,6 +62,10 @@ impl FileConfig {
         self.defaults.tablet_mode()
     }
 
+    pub fn lighting(&self) -> &Lighting {
+        &self.lighting
+    }
+
     pub fn validate(&self) -> Result<(), FileConfigValidationError> {
         if !self.security.advanced_pin().chars().all(char::is_numeric) {
             return Err(FileConfigValidationError::SecurityAdvancedPinInvalid(
@@ -109,60 +113,63 @@ impl FileConfig {
                 .patch()
                 .types()
                 .iter()
-                .any(|t| t.name() == fixture.ftype())
+                .any(|t| t.name() == fixture.fixture_type())
             {
                 return Err(FileConfigValidationError::PatchedFixtureTypeInvalid(
                     format!(
                         "Patched fixture '{}' references an unknown fixture type '{}'",
                         fixture.name(),
-                        fixture.ftype()
+                        fixture.fixture_type()
                     ),
                 ));
             }
         }
 
         for scene in self.lighting.scenes() {
-            if !["on", "off", "default"].contains(&scene.ftype()) {
-                return Err(FileConfigValidationError::SceneTypeInvalid(
-                    format!(
-                        "Scene '{}' has an invalid type '{}', must be 'on', 'off', or 'default'",
-                        scene.name(),
-                        scene.ftype()
-                    ),
-                ));
+            if !["on", "off", "default"].contains(&scene.scene_type()) {
+                return Err(FileConfigValidationError::SceneTypeInvalid(format!(
+                    "Scene '{}' has an invalid type '{}', must be 'on', 'off', or 'default'",
+                    scene.name(),
+                    scene.scene_type()
+                )));
             }
 
             for set in scene.sets() {
-                if !self
-                    .lighting
-                    .patch()
-                    .patched()
-                    .iter()
-                    .any(|f| f.name() == set.fixture())
-                {
-                    return Err(FileConfigValidationError::SceneSetInvalid(
-                        format!(
-                            "Scene '{}' references an unknown fixture '{}'",
-                            scene.name(),
-                            set.fixture()
-                        ),
-                    ));
-                }
+                let fixture_types = self.lighting.patch().types();
+                let patch = self.lighting.patch().patched();
 
-                if !self
-                    .lighting
-                    .patch()
-                    .types()
-                    .iter()
-                    .any(|t| t.name() == set.channel())
-                {
-                    return Err(FileConfigValidationError::SceneSetInvalid(
-                        format!(
-                            "Scene '{}' references an unknown channel '{}'",
+                let fixture = patch.iter().find(|f| f.name() == set.fixture());
+                if let Some(fixture) = fixture {
+                    let fixture_type = fixture.fixture_type();
+
+                    let fixture_type_def = fixture_types.iter().find(|t| t.name() == fixture_type);
+                    if let Some(fixture_type_def) = fixture_type_def {
+                        if !fixture_type_def
+                            .channels()
+                            .contains(&set.channel().to_string())
+                        {
+                            return Err(FileConfigValidationError::SceneSetInvalid(format!(
+                                "Scene '{}' set for fixture '{}' has an invalid channel '{}', valid channels are: {:?}",
+                                scene.name(),
+                                set.fixture(),
+                                set.channel(),
+                                fixture_type_def.channels()
+                            )));
+                        }
+                    } else {
+                        return Err(FileConfigValidationError::SceneSetInvalid(format!(
+                            "Scene '{}' set for fixture '{}' references an unknown fixture type '{}'",
                             scene.name(),
-                            set.channel()
-                        ),
-                    ));
+                            set.fixture(),
+                            fixture_type
+                        )));
+                    }
+                } else {
+                    return Err(FileConfigValidationError::SceneSetInvalid(format!(
+                        "Scene '{}' references an unknown fixture '{}'",
+                        scene.name(),
+                        set.fixture()
+                    )));
                 }
             }
         }
@@ -307,7 +314,7 @@ impl FixtureType {
 pub struct PatchedFixture {
     name: String,
     #[serde(rename = "type")]
-    ftype: String,
+    fixture_type: String,
     channel: u8,
 }
 
@@ -316,8 +323,8 @@ impl PatchedFixture {
         &self.name
     }
 
-    pub fn ftype(&self) -> &str {
-        &self.ftype
+    pub fn fixture_type(&self) -> &str {
+        &self.fixture_type
     }
 
     pub fn channel(&self) -> u8 {
@@ -330,7 +337,7 @@ impl PatchedFixture {
 pub struct Scene {
     name: String,
     #[serde(rename = "type")]
-    ftype: String, // "on", "off", "default"
+    scene_type: String, // "on", "off", "default"
     sets: Vec<Set>,
 }
 
@@ -339,8 +346,8 @@ impl Scene {
         &self.name
     }
 
-    pub fn ftype(&self) -> &str {
-        &self.ftype
+    pub fn scene_type(&self) -> &str {
+        &self.scene_type
     }
 
     pub fn sets(&self) -> &[Set] {
