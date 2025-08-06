@@ -6,6 +6,7 @@ use std::sync::Mutex;
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
+mod artnet;
 mod commands;
 pub mod config;
 mod state;
@@ -67,7 +68,8 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
         })
         .invoke_handler(tauri::generate_handler![
             commands::startup_data::get_startup_data,
-            commands::security::check_advanced_pin
+            commands::security::check_advanced_pin,
+            commands::artnet::get_all_artnet_scenes,
         ])
         .run(tauri::generate_context!())
 }
