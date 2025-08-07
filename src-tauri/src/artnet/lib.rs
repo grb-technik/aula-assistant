@@ -1,3 +1,43 @@
+use std::net::UdpSocket;
+
+#[derive(Debug)]
+pub(crate) enum ArtNetError {
+    FailedToBindSocket(std::io::Error),
+    FailedToSendData(std::io::Error),
+}
+
+impl std::fmt::Display for ArtNetError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ArtNetError::FailedToBindSocket(e) => write!(f, "Failed to bind socket: {}", e),
+            ArtNetError::FailedToSendData(e) => write!(f, "Failed to send data: {}", e),
+        }
+    }
+}
+
+impl std::error::Error for ArtNetError {}
+
+/// a function to send the artnet packages
+pub(crate) fn create_artnet_socket(
+    bind_addr: String,
+    target_addr: String,
+    broadcast: bool,
+) -> Result<impl FnOnce(&Vec<u8>) -> Result<(), ArtNetError>, ArtNetError> {
+    let socket = UdpSocket::bind(bind_addr).map_err(ArtNetError::FailedToBindSocket)?;
+    socket
+        .set_broadcast(broadcast)
+        .map_err(ArtNetError::FailedToBindSocket)?;
+
+    let send = move |data: &Vec<u8>| -> Result<(), ArtNetError> {
+        socket
+            .send_to(data, target_addr)
+            .map_err(ArtNetError::FailedToSendData)?;
+        Ok(())
+    };
+
+    Ok(send)
+}
+
 /// see also https://art-net.org.uk/downloads/art-net.pdf
 /// always sends 512 bytes of data
 pub fn build_artnet_package(universe: &u16, data: &[u8; 512]) -> Vec<u8> {
