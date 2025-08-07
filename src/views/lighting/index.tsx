@@ -14,14 +14,16 @@ export function LightingView({ onLocationSwitch }: { onLocationSwitch: (to: View
     const loadArtnetScenes = async () => {
         const result = await tryCatch(invoke<string[]>("get_all_artnet_scenes"));
         if (result.error) {
-            error(`failed to retrieve startup data: failed to invoke get_startup_data: ${result.error.message}`);
-            toast.error("Failed to retrieve startup data.");
+            error(`failed to retrieve lighting scenes: failed to invoke get_all_artnet_scenes: ${result.error.message}`);
+            toast.error("Failed to retrieve lighting scenes.");
             return;
         }
         return result.data || [];
     };
 
-    const onSceneClick = (scene: string) => {};
+    const onSceneClick = (_scenes: string) => {
+        // TODO: impl invoke handler for scene click
+    };
 
     useEffect(() => {
         loadArtnetScenes().then((scenes: string[] | undefined) => {

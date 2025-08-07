@@ -1,3 +1,3 @@
 mod lib;
 
-pub use lib::build_artnet_package;
+pub(crate) use lib::build_artnet_package;

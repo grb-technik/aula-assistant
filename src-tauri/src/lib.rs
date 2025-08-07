@@ -11,6 +11,9 @@ mod commands;
 pub mod config;
 mod state;
 
+#[cfg(test)]
+mod test;
+
 pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
     tauri::Builder::default()
         .plugin(tauri_plugin_os::init())
