@@ -93,7 +93,6 @@ impl TakeFrom<&FileConfig> for AppStateBuilder {
 
         for scene in config.lighting().scenes() {
             let scene_name = scene.name().to_string();
-            let scene_type = SceneType::from(scene.scene_type());
             let mut channels: [Option<u8>; 512] = [None; 512];
             for set in scene.sets() {
                 let fixture = patch
@@ -114,7 +113,7 @@ impl TakeFrom<&FileConfig> for AppStateBuilder {
                 let value = set.value();
                 channels[channel_index] = Some(value);
             }
-            let lighting_scene = LightingScene::new(scene_type, channels.to_vec());
+            let lighting_scene = LightingScene::new(channels.to_vec());
             self.lighting_scenes.insert(scene_name, lighting_scene);
         }
     }
@@ -163,47 +162,13 @@ impl AppState {
     }
 }
 
-pub enum SceneType {
-    On,
-    Off,
-    Default,
-}
-
-impl From<&str> for SceneType {
-    fn from(s: &str) -> Self {
-        match s {
-            "on" => SceneType::On,
-            "off" => SceneType::Off,
-            _ => SceneType::Default,
-        }
-    }
-}
-
-impl ToString for SceneType {
-    fn to_string(&self) -> String {
-        match self {
-            SceneType::On => "on".to_string(),
-            SceneType::Off => "off".to_string(),
-            SceneType::Default => "default".to_string(),
-        }
-    }
-}
-
 pub struct LightingScene {
-    scene_type: SceneType,
     channels: Vec<Option<u8>>,
 }
 
 impl LightingScene {
-    pub fn new(scene_type: SceneType, channels: Vec<Option<u8>>) -> Self {
-        LightingScene {
-            scene_type,
-            channels,
-        }
-    }
-
-    pub fn scene_type(&self) -> &SceneType {
-        &self.scene_type
+    pub fn new(channels: Vec<Option<u8>>) -> Self {
+        LightingScene { channels }
     }
 
     pub fn channels(&self) -> &Vec<Option<u8>> {

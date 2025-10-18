@@ -116,10 +116,6 @@
                             "name": {
                                 "type": "string"
                             },
-                            "type": {
-                                "type": "string",
-                                "enum": ["on", "off", "default"]
-                            },
                             "sets": {
                                 "type": "array",
                                 "items": {

@@ -7,7 +7,6 @@ pub enum FileConfigValidationError {
     ArtnetTargetInvalid(String),
     ArtnetUniverseInvalid(String),
     PatchedFixtureTypeInvalid(String),
-    SceneTypeInvalid(String),
     SceneSetInvalid(String),
 }
 
@@ -31,9 +30,6 @@ impl std::fmt::Display for FileConfigValidationError {
                 }
                 FileConfigValidationError::PatchedFixtureTypeInvalid(str) => {
                     format!("lighting.patch.patched fixture type is invalid: {}", str)
-                }
-                FileConfigValidationError::SceneTypeInvalid(str) => {
-                    format!("lighting.scenes scene type is invalid: {}", str)
                 }
                 FileConfigValidationError::SceneSetInvalid(str) => {
                     format!("lighting.scenes scene set is invalid: {}", str)
@@ -126,14 +122,6 @@ impl FileConfig {
         }
 
         for scene in self.lighting.scenes() {
-            if !["on", "off", "default"].contains(&scene.scene_type()) {
-                return Err(FileConfigValidationError::SceneTypeInvalid(format!(
-                    "Scene '{}' has an invalid type '{}', must be 'on', 'off', or 'default'",
-                    scene.name(),
-                    scene.scene_type()
-                )));
-            }
-
             for set in scene.sets() {
                 let fixture_types = self.lighting.patch().types();
                 let patch = self.lighting.patch().patched();
@@ -336,18 +324,12 @@ impl PatchedFixture {
 #[serde(deny_unknown_fields)]
 pub struct Scene {
     name: String,
-    #[serde(rename = "type")]
-    scene_type: String, // "on", "off", "default"
     sets: Vec<Set>,
 }
 
 impl Scene {
     pub fn name(&self) -> &str {
         &self.name
-    }
-
-    pub fn scene_type(&self) -> &str {
-        &self.scene_type
     }
 
     pub fn sets(&self) -> &[Set] {
