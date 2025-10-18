@@ -73,6 +73,7 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
             commands::startup_data::get_startup_data,
             commands::security::check_advanced_pin,
             commands::artnet::get_all_artnet_scenes,
+            commands::artnet::run_artnet_scene
         ])
         .run(tauri::generate_context!())
 }

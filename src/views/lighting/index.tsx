@@ -21,8 +21,14 @@ export function LightingView({ onLocationSwitch }: { onLocationSwitch: (to: View
         return result.data || [];
     };
 
-    const onSceneClick = (_scenes: string) => {
-        // TODO: impl invoke handler for scene click
+    const runArtnetScene = async (sceneName: string) => {
+        const result = await tryCatch(invoke<void>("run_artnet_scene", { sceneName }));
+        if (result.error) {
+            error(`failed to run lighting scene '${sceneName}': failed to invoke run_artnet_scene: ${result.error.message}`);
+            toast.error(`Failed to run lighting scene '${sceneName}'.`);
+            return;
+        }
+        toast.success(`Activated lighting scene '${sceneName}'.`);
     };
 
     useEffect(() => {
@@ -57,7 +63,7 @@ export function LightingView({ onLocationSwitch }: { onLocationSwitch: (to: View
                     key={index}
                     title={scene}
                     onClick={() => {
-                        onSceneClick(scene);
+                        runArtnetScene(scene);
                     }}
                     icon={<MovingHeadIcon className="fill-foreground" height={32} width={32} />}
                 />

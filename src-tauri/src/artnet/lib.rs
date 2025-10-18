@@ -1,4 +1,4 @@
-use std::net::UdpSocket;
+use std::net::{SocketAddr, UdpSocket};
 
 #[derive(Debug)]
 pub(crate) enum ArtNetError {
@@ -17,25 +17,27 @@ impl std::fmt::Display for ArtNetError {
 
 impl std::error::Error for ArtNetError {}
 
-/// a function to send the artnet packages
 pub(crate) fn create_artnet_socket(
     bind_addr: String,
-    target_addr: String,
     broadcast: bool,
-) -> Result<impl FnOnce(&Vec<u8>) -> Result<(), ArtNetError>, ArtNetError> {
+) -> Result<UdpSocket, ArtNetError> {
     let socket = UdpSocket::bind(bind_addr).map_err(ArtNetError::FailedToBindSocket)?;
     socket
         .set_broadcast(broadcast)
         .map_err(ArtNetError::FailedToBindSocket)?;
 
-    let send = move |data: &Vec<u8>| -> Result<(), ArtNetError> {
-        socket
-            .send_to(data, target_addr)
-            .map_err(ArtNetError::FailedToSendData)?;
-        Ok(())
-    };
+    Ok(socket)
+}
 
-    Ok(send)
+pub(crate) fn send_artnet_package(
+    socket: &UdpSocket,
+    target_addr: &SocketAddr,
+    package: &Vec<u8>,
+) -> Result<(), ArtNetError> {
+    socket
+        .send_to(package, target_addr)
+        .map_err(ArtNetError::FailedToSendData)?;
+    Ok(())
 }
 
 /// see also https://art-net.org.uk/downloads/art-net.pdf

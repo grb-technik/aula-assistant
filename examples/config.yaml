@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=file:///C:/dev/ATec/aula_assistant/etc/config.schema.json
 
 defaults:
-    tablet_mode: false
+    tablet_mode: true
 
 security:
     advanced_pin: "0000"
@@ -24,7 +24,7 @@ lighting:
               type: spot # fixture type name
               channel: 1 # starting dmx channel
     scenes:
-        - name: Blackout # scene name
+        - name: Test On # scene name
           type: default #  (on, off, default) (just for ui and in future use for auto-triggering - default = no action)
           sets:
               - fixture: spot1
@@ -33,6 +33,18 @@ lighting:
               - fixture: spot1
                 channel: green
                 value: 255
+              - fixture: spot1
+                channel: blue
+                value: 255
+        - name: Test Off # scene name
+          type: default #  (on, off, default) (just for ui and in future use for auto-triggering - default = no action)
+          sets:
+              - fixture: spot1
+                channel: red
+                value: 0
+              - fixture: spot1
+                channel: green
+                value: 0
               - fixture: spot1
                 channel: blue
                 value: 0

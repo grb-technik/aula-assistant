@@ -1,12 +1,19 @@
-use crate::config::{FileConfig, RuntimeConfig};
-use std::collections::HashMap;
+use crate::{
+    artnet,
+    config::{FileConfig, RuntimeConfig},
+};
+use std::{
+    collections::HashMap,
+    net::{SocketAddr, UdpSocket},
+    sync::Mutex,
+};
 
 pub struct AppStateBuilder {
     show_appbar: Option<bool>,
     advanced_pin: Option<String>,
     artnet_bind: Option<String>,
     artnet_broadcast: Option<bool>,
-    artnet_target: Option<String>,
+    artnet_target: Option<SocketAddr>,
     artnet_universe: Option<u16>,
     lighting_scenes: HashMap<String, LightingScene>,
 }
@@ -36,11 +43,15 @@ impl AppStateBuilder {
         AppState {
             show_appbar: self.show_appbar.expect("show_appbar must be set"),
             advanced_pin: self.advanced_pin.expect("advanced_pin must be set"),
-            artnet_bind: self.artnet_bind.expect("artnet_bind must be set"),
-            artnet_broadcast: self.artnet_broadcast.expect("artnet_broadcast must be set"),
             artnet_target: self.artnet_target.expect("artnet_target must be set"),
             artnet_universe: self.artnet_universe.expect("artnet_universe must be set"),
             lighting_scenes: self.lighting_scenes,
+            artnet_data: Mutex::new([0; 512]),
+            artnet_socket: artnet::create_artnet_socket(
+                self.artnet_bind.unwrap(),
+                self.artnet_broadcast.unwrap(),
+            )
+            .expect("failed to create artnet socket"),
         }
     }
 }
@@ -67,7 +78,14 @@ impl TakeFrom<&FileConfig> for AppStateBuilder {
 
         self.artnet_bind = Some(config.lighting().artnet().bind().to_string());
         self.artnet_broadcast = Some(config.lighting().artnet().broadcast());
-        self.artnet_target = Some(config.lighting().artnet().target().to_string());
+        self.artnet_target = Some(
+            config
+                .lighting()
+                .artnet()
+                .target()
+                .parse()
+                .expect("failed to parse artnet target address"),
+        );
         self.artnet_universe = Some(config.lighting().artnet().universe());
 
         let fixture_types = config.lighting().patch().types();
@@ -108,10 +126,10 @@ pub struct AppState {
     // security
     advanced_pin: String,
     // lighting
-    artnet_bind: String,
-    artnet_broadcast: bool,
-    artnet_target: String,
+    artnet_target: SocketAddr,
     artnet_universe: u16,
+    artnet_socket: UdpSocket,
+    artnet_data: Mutex<[u8; 512]>,
     lighting_scenes: HashMap<String, LightingScene>,
 }
 
@@ -124,20 +142,20 @@ impl AppState {
         &self.advanced_pin
     }
 
-    pub fn artnet_bind(&self) -> &str {
-        &self.artnet_bind
-    }
-
-    pub fn artnet_broadcast(&self) -> bool {
-        self.artnet_broadcast
-    }
-
-    pub fn artnet_target(&self) -> &str {
+    pub fn artnet_target(&self) -> &SocketAddr {
         &self.artnet_target
     }
 
     pub fn artnet_universe(&self) -> u16 {
         self.artnet_universe
+    }
+
+    pub fn artnet_socket(&self) -> &UdpSocket {
+        &self.artnet_socket
+    }
+
+    pub fn artnet_data(&self) -> std::sync::MutexGuard<'_, [u8; 512]> {
+        self.artnet_data.lock().expect("failed to lock artnet data")
     }
 
     pub fn lighting_scenes(&self) -> &HashMap<String, LightingScene> {

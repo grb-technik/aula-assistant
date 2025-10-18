@@ -101,7 +101,7 @@ OS: ${os_info.platform()} ${os_info.arch()} ${os_info.version()}`,
                     <MenubarTrigger tabIndex={-1}>Window</MenubarTrigger>
                     <MenubarContent>
                         <MenubarItem onClick={toggleFullscreen}>
-                            Full Screen
+                            {isFullscreen ? "Exit Full Screen" : "Full Screen"}
                             <MenubarShortcut>F11</MenubarShortcut>
                         </MenubarItem>
                         <MenubarItem onClick={toggleMaximizeWindow} disabled={isWindowMaximized}>
