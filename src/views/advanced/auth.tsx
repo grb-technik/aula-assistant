@@ -4,40 +4,32 @@ import { ViewLocation } from "..";
 import { ViewCard } from "@/components/view-card";
 import { PinInput } from "@/components/pin-input";
 import { useState } from "react";
-import { tryCatch } from "@/lib/try-catch";
-import { invoke } from "@tauri-apps/api/core";
-import { error } from "@tauri-apps/plugin-log";
 import { toast } from "sonner";
+import { checkAdvancedPin } from "@/lib/advanced";
 
 export function AdvancedAuthenticateView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLocation) => void }) {
     const [pinInputMessage, setPinInputMessage] = useState<
         "Please enter your pin to proceed." | "Please enter a valid pin." | "Pin incorrect."
     >("Please enter your pin to proceed.");
 
-    const handlePinEnter = (pin: number[]) => {
+    const handlePinEnter = async (pin: number[]) => {
         if (pin.length === 0) {
             setPinInputMessage("Please enter a valid pin.");
             return;
         }
 
-        tryCatch(
-            invoke<boolean>("check_advanced_pin", {
-                pin: pin.join(""),
-            }),
-        ).then((result) => {
-            if (result.error) {
-                error(`Failed to authenticate: failed to invoke check_advanced_pin: ${result.error.message}`);
-                toast.error("Failed to authenticate.");
-                return;
-            }
-
-            if (result.data) {
-                // TODO:
-                onLocationSwitch("start");
-            } else {
-                setPinInputMessage("Pin incorrect.");
-            }
-        });
+        const result = await checkAdvancedPin(pin.join(""));
+        if (result === null) {
+            toast.error("Failed to authenticate.");
+            return;
+        } else if (result) {
+            toast.success("Authenticated successfully.");
+            onLocationSwitch("start");
+            return;
+        } else {
+            setPinInputMessage("Pin incorrect.");
+            return;
+        }
     };
 
     return (

@@ -2,42 +2,33 @@ import { MiniViewButton } from "@/components/mini-view-button";
 import { BackArrowIcon, MovingHeadIcon } from "@/components/icons";
 import { ViewLocation } from "..";
 import { toast } from "sonner";
-import { error } from "@tauri-apps/plugin-log";
-import { tryCatch } from "@/lib/try-catch";
-import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { ViewButton } from "@/components/view-button";
+import { loadArtnetScenes, runArtnetScene } from "@/lib/lighting";
 
 export function LightingView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLocation) => void }) {
-    const [scenes, setScenes] = useState<string[] | undefined>(undefined);
+    const [scenes, setScenes] = useState<string[]>([]);
 
-    const loadArtnetScenes = async () => {
-        const result = await tryCatch(invoke<string[]>("get_all_artnet_scenes"));
-        if (result.error) {
-            error(`failed to retrieve lighting scenes: failed to invoke get_all_artnet_scenes: ${result.error.message}`);
-            toast.error("Failed to retrieve lighting scenes.");
-            return;
-        }
-        return result.data || [];
-    };
-
-    const runArtnetScene = async (sceneName: string) => {
-        const result = await tryCatch(invoke<void>("run_artnet_scene", { sceneName }));
-        if (result.error) {
-            error(`failed to run lighting scene '${sceneName}': failed to invoke run_artnet_scene: ${result.error.message}`);
+    const onButtonClick = async (sceneName: string) => {
+        if (await runArtnetScene(sceneName)) {
+            toast.success(`Activated lighting scene '${sceneName}'.`);
+        } else {
             toast.error(`Failed to run lighting scene '${sceneName}'.`);
-            return;
         }
-        toast.success(`Activated lighting scene '${sceneName}'.`);
     };
 
     useEffect(() => {
-        loadArtnetScenes().then((scenes: string[] | undefined) => {
+        loadArtnetScenes().then((scenes: string[] | null) => {
+            if (scenes == null) {
+                toast.error("Failed to retrieve lighting scenes.");
+                setScenes([]);
+                return;
+            }
             setScenes(scenes);
         });
     }, [setScenes]);
 
-    if (!scenes || scenes.length === 0) {
+    if (scenes.length === 0) {
         return (
             <div className="grid min-h-[inherit] gap-4 p-4 max-sm:flex max-sm:flex-col max-sm:items-center max-sm:justify-start">
                 <ViewButton
@@ -63,7 +54,7 @@ export function LightingView({ onLocationSwitch }: { onLocationSwitch: (to: View
                     key={index}
                     title={scene}
                     onClick={() => {
-                        runArtnetScene(scene);
+                        onButtonClick(scene);
                     }}
                     icon={<MovingHeadIcon className="fill-foreground" height={32} width={32} />}
                 />
