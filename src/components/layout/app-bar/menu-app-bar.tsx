@@ -28,7 +28,6 @@ export function MenuAppBar() {
     const { isWindowMaximized, minimizeWindow, maximizeWindow, unmaximizeWindow, toggleMaximizeWindow, closeWindow } =
         useWindow();
     const startUpData = useStartupData();
-
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
     const toggleFullscreen = () => {
@@ -72,6 +71,13 @@ OS: ${os_info.platform()} ${os_info.arch()} ${os_info.version()}`,
             document.removeEventListener("keydown", handleKeydown);
         };
     });
+
+    useEffect(() => {
+        if (startUpData.open_in_fullscreen) {
+            maximizeWindow();
+            setIsFullscreen(true);
+        }
+    }, [startUpData]);
 
     return (
         <header

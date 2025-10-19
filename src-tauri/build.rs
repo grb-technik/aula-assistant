@@ -1,13 +1,10 @@
 fn main() {
-    let git_info = commit_information();
-
-    match git_info {
-        Some((date, short_id, long_id)) => {
-            println!("cargo:rustc-env=LAST_COMMIT_DATE={}", date.trim());
-            println!("cargo:rustc-env=LAST_COMMIT_ID={}", short_id.trim());
-            println!("cargo:rustc-env=LAST_COMMIT_ID_LONG={}", long_id.trim());
-        }
-        _ => {}
+    if let Some((date, short_id, long_id)) = commit_information() {
+        println!("cargo:rustc-env=LAST_COMMIT_DATE={}", date);
+        println!("cargo:rustc-env=LAST_COMMIT_ID={}", short_id);
+        println!("cargo:rustc-env=LAST_COMMIT_ID_LONG={}", long_id);
+    } else {
+        eprintln!("cargo:warning=Failed to retrieve Git commit information");
     }
 
     println!(
@@ -19,38 +16,25 @@ fn main() {
 }
 
 fn commit_information() -> Option<(String, String, String)> {
-    // commit date as YYY-MM-DD
-    let date = std::process::Command::new("git")
-        .args(["log", "-1", "--format=%cd", "--date=short"])
+    let output = std::process::Command::new("git")
+        .args(["log", "-1", "--format=%cd|%h|%H", "--date=short"])
         .output()
-        .ok()?
-        .stdout;
-    let date = String::from_utf8(date).ok()?.trim().to_string();
-    if date.is_empty() {
+        .ok()?;
+
+    if !output.status.success() {
         return None;
     }
 
-    // commit id as short
-    let short_id = std::process::Command::new("git")
-        .args(["log", "-1", "--format=%h"])
-        .output()
-        .ok()?
-        .stdout;
-    let short_id = String::from_utf8(short_id).ok()?.trim().to_string();
-    if short_id.is_empty() {
+    let stdout = String::from_utf8(output.stdout).ok()?;
+    let parts: Vec<&str> = stdout.trim().split('|').collect();
+
+    if parts.len() != 3 {
         return None;
     }
 
-    // commit id as long
-    let long_id = std::process::Command::new("git")
-        .args(["log", "-1", "--format=%H"])
-        .output()
-        .ok()?
-        .stdout;
-    let long_id = String::from_utf8(long_id).ok()?.trim().to_string();
-    if long_id.is_empty() {
-        return None;
-    }
-
-    Some((date, short_id, long_id))
+    Some((
+        parts[0].trim().to_string(), // date
+        parts[1].trim().to_string(), // short id
+        parts[2].trim().to_string(), // long id
+    ))
 }

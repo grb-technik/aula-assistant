@@ -7,6 +7,7 @@ use tauri::State;
 pub struct StartupData {
     build: BuildInfo,
     show_appbar: bool,
+    open_in_fullscreen: bool,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -28,6 +29,7 @@ pub fn get_startup_data(state: State<'_, Mutex<AppState>>) -> StartupData {
     let state = state.lock().expect("failed to lock AppState");
 
     let show_appbar = state.show_appbar();
+    let open_in_fullscreen = state.open_in_fullscreen();
 
     let commit_date = std::env::var("LAST_COMMIT_DATE").ok();
     let commit_short_id = std::env::var("LAST_COMMIT_ID").ok();
@@ -59,5 +61,6 @@ pub fn get_startup_data(state: State<'_, Mutex<AppState>>) -> StartupData {
     StartupData {
         build: build_info,
         show_appbar,
+        open_in_fullscreen,
     }
 }

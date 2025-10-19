@@ -16,6 +16,7 @@ interface StartupDataType {
         } | null;
     };
     show_appbar: boolean;
+    open_in_fullscreen: boolean;
 }
 
 const StartUpDataContext = createContext<StartupDataType | undefined>(undefined);

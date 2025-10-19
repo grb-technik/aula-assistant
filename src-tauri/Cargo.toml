@@ -2,6 +2,7 @@
 name = "aula-assistant"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.90"
 publish = false
 description = "A user-friendly media control system used in the Gymnasium Riedberg auditorium."
 repository = "https://github.com/grb-technik/aula-assistant"

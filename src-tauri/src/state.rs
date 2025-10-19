@@ -10,6 +10,7 @@ use std::{
 
 pub struct AppStateBuilder {
     show_appbar: Option<bool>,
+    open_in_fullscreen: Option<bool>,
     advanced_pin: Option<String>,
     artnet_bind: Option<String>,
     artnet_broadcast: Option<bool>,
@@ -21,6 +22,7 @@ pub struct AppStateBuilder {
 impl AppStateBuilder {
     pub fn new() -> Self {
         AppStateBuilder {
+            open_in_fullscreen: None,
             show_appbar: None,
             advanced_pin: None,
             artnet_bind: None,
@@ -35,12 +37,17 @@ impl AppStateBuilder {
         self.show_appbar = Some(show);
     }
 
+    pub fn open_in_fullscreen(&mut self, open: bool) {
+        self.open_in_fullscreen = Some(open);
+    }
+
     pub fn advanced_pin(&mut self, pin: String) {
         self.advanced_pin = Some(pin);
     }
 
     pub fn build(self) -> AppState {
         AppState {
+            open_in_fullscreen: self.open_in_fullscreen.unwrap_or(false),
             show_appbar: self.show_appbar.expect("show_appbar must be set"),
             advanced_pin: self.advanced_pin.expect("advanced_pin must be set"),
             artnet_target: self.artnet_target.expect("artnet_target must be set"),
@@ -64,6 +71,9 @@ impl TakeFrom<&RuntimeConfig> for AppStateBuilder {
     fn take_from(&mut self, config: &RuntimeConfig) {
         if let Some(tablet_mode) = config.tablet_mode() {
             self.show_appbar(!tablet_mode);
+        }
+        if let Some(fullscreen) = config.fullscreen() {
+            self.open_in_fullscreen(fullscreen);
         }
     }
 }
@@ -121,6 +131,7 @@ impl TakeFrom<&FileConfig> for AppStateBuilder {
 
 pub struct AppState {
     // defaults
+    open_in_fullscreen: bool,
     show_appbar: bool,
     // security
     advanced_pin: String,
@@ -135,6 +146,10 @@ pub struct AppState {
 impl AppState {
     pub fn show_appbar(&self) -> bool {
         self.show_appbar
+    }
+
+    pub fn open_in_fullscreen(&self) -> bool {
+        self.open_in_fullscreen
     }
 
     pub fn advanced_pin(&self) -> &str {

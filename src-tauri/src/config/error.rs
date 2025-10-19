@@ -2,6 +2,7 @@ use std::{fmt::Display, path::PathBuf};
 
 #[derive(Debug)]
 pub enum Error {
+    FileValidationError(FileValidationError),
     YamlError(serde_yaml::Error),
     IoError(std::io::Error),
     FileNotFound(PathBuf),
@@ -32,6 +33,7 @@ impl Display for Error {
             f,
             "{}",
             match self {
+                Error::FileValidationError(e) => format!("invalid config file: {}", e),
                 Error::YamlError(e) => format!("yaml error: {}", e),
                 Error::IoError(e) => format!("io error: {}", e),
                 Error::FileNotFound(path) => format!("file not found: {}", path.display()),
@@ -42,3 +44,44 @@ impl Display for Error {
 }
 
 impl std::error::Error for Error {}
+
+#[derive(Debug)]
+pub enum FileValidationError {
+    SecurityAdvancedPinInvalid(String),
+    ArtnetBindInvalid(String),
+    ArtnetTargetInvalid(String),
+    ArtnetUniverseInvalid(String),
+    PatchedFixtureTypeInvalid(String),
+    SceneSetInvalid(String),
+}
+
+impl std::fmt::Display for FileValidationError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                FileValidationError::SecurityAdvancedPinInvalid(str) => {
+                    format!("security.advanced_pin is invalid: {}", str)
+                }
+                FileValidationError::ArtnetBindInvalid(str) => {
+                    format!("lighting.artnet.bind is invalid: {}", str)
+                }
+                FileValidationError::ArtnetTargetInvalid(str) => {
+                    format!("lighting.artnet.target is invalid: {}", str)
+                }
+                FileValidationError::ArtnetUniverseInvalid(str) => {
+                    format!("lighting.artnet.universe is invalid: {}", str)
+                }
+                FileValidationError::PatchedFixtureTypeInvalid(str) => {
+                    format!("lighting.patch.patched fixture type is invalid: {}", str)
+                }
+                FileValidationError::SceneSetInvalid(str) => {
+                    format!("lighting.scenes scene set is invalid: {}", str)
+                }
+            }
+        )
+    }
+}
+
+impl std::error::Error for FileValidationError {}

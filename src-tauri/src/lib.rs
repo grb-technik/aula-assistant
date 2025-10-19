@@ -14,7 +14,7 @@ mod state;
 #[cfg(test)]
 mod test;
 
-pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
+pub fn run(runtime_config: RuntimeConfig) -> tauri::Result<()> {
     tauri::Builder::default()
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_dialog::init())
@@ -48,22 +48,18 @@ pub fn run(config: RuntimeConfig) -> tauri::Result<()> {
         )
         .plugin(tauri_plugin_opener::init())
         .setup(move |app| {
-            let cfg = config::load_app_config(&config, app).map_err(|e| {
-                log::error!("failed to load app config: {}", e);
-                e
-            })?;
+            let file_config: config::FileConfig =
+                config::load_app_config(runtime_config.config_file_path(), app).map_err(|e| {
+                    log::error!("failed to load app config: {}", e);
+                    e
+                })?;
 
-            cfg.validate().map_err(|e| {
-                log::error!("config validation failed: {:?}", e);
-                e
-            })?;
-
-            let mut apb = AppStateBuilder::new();
+            let mut app_state_builder = AppStateBuilder::new();
             // !!! do not change order !!!
-            apb.take_from(&config);
-            apb.take_from(&cfg);
+            app_state_builder.take_from(&runtime_config);
+            app_state_builder.take_from(&file_config);
 
-            let state = apb.build();
+            let state = app_state_builder.build();
 
             app.manage(Mutex::new(state));
 

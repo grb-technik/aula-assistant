@@ -10,7 +10,7 @@ export async function checkAdvancedPin(pin: string): Promise<boolean | null> {
     )
 
     if (result.error) {
-        error(`Failed to authenticate: failed to invoke check_advanced_pin: ${result.error.message}`);
+        error(`failed to authenticate: failed to invoke check_advanced_pin: ${result.error.message}`);
         return null;
     }
 

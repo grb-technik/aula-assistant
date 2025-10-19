@@ -18,7 +18,7 @@ pub fn run_artnet_scene(
     let scenes = app_state.lighting_scenes();
     let scene = scenes
         .get(&scene_name)
-        .ok_or("Scene not found".to_string())?;
+        .ok_or("scene not found".to_string())?;
     let universe = app_state.artnet_universe();
     let addr = &app_state.artnet_target();
     let socket = app_state.artnet_socket();
