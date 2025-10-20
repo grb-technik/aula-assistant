@@ -1,0 +1,9 @@
+[workspace]
+members = ["crates/artnet","crates/cli","src-tauri"]
+resolver = "3"
+
+[workspace.package]
+repository = "https://github.com/grb-technik/aula-assistant"
+edition = "2024"
+rust-version = "1.90"
+publish = false

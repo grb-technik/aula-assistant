@@ -6,13 +6,9 @@ use std::sync::Mutex;
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
-mod artnet;
 mod commands;
 pub mod config;
 mod state;
-
-#[cfg(test)]
-mod test;
 
 pub fn run(runtime_config: RuntimeConfig) -> tauri::Result<()> {
     tauri::Builder::default()

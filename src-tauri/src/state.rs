@@ -1,7 +1,5 @@
-use crate::{
-    artnet,
-    config::{FileConfig, RuntimeConfig},
-};
+use crate::config::{FileConfig, RuntimeConfig};
+use artnet::create_artnet_socket;
 use std::{
     collections::HashMap,
     net::{SocketAddr, UdpSocket},
@@ -54,7 +52,7 @@ impl AppStateBuilder {
             artnet_universe: self.artnet_universe.expect("artnet_universe must be set"),
             lighting_scenes: self.lighting_scenes,
             artnet_data: Mutex::new([0; 512]),
-            artnet_socket: artnet::create_artnet_socket(
+            artnet_socket: create_artnet_socket(
                 self.artnet_bind.unwrap(),
                 self.artnet_broadcast.unwrap(),
             )

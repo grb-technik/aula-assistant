@@ -1,4 +1,5 @@
-use crate::{artnet, state::AppState};
+use crate::state::AppState;
+use artnet::{build_artnet_package, send_artnet_package};
 use std::sync::Mutex;
 use tauri::State;
 
@@ -31,9 +32,8 @@ pub fn run_artnet_scene(
             }
         }
 
-        let package = artnet::build_artnet_package(&universe, &*artnet_data_mut);
-        artnet::send_artnet_package(&socket, *addr, &package)
-            .expect("failed to send artnet package");
+        let package = build_artnet_package(&universe, &*artnet_data_mut);
+        send_artnet_package(&socket, *addr, &package).expect("failed to send artnet package");
     }
     Ok(())
 }

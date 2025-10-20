@@ -1,4 +1,4 @@
-use crate::artnet::build_artnet_package;
+use crate::build_artnet_package;
 
 #[test]
 fn test_build_artnet_package() {
@@ -13,11 +13,7 @@ fn test_build_artnet_package() {
         ARTNET_HEADER_SIZE + data.len(),
         "package size is not correct"
     );
-    assert_eq!(
-        pgk[0..8],
-        ARTNET_NAME,
-        "Art-Net name header is not correct"
-    );
+    assert_eq!(pgk[0..8], ARTNET_NAME, "Art-Net name header is not correct");
     assert_eq!(pgk[18..], data, "data is not the same");
 
     let mut data_length = (pgk.len() - ARTNET_HEADER_SIZE) as u16;
