@@ -1,22 +1,31 @@
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
 use aula_assistant_lib::{config::RuntimeConfigBuilder, run};
 use cli::{Mode, parse_args, print_license, print_version};
 
+#[cfg(windows)]
+mod windows;
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    #[cfg(windows)]
+    {
+        use windows::{detach_console, was_started_from_console};
+
+        if was_started_from_console() {
+            detach_console();
+        }
+    }
+
     let mode = parse_args()?;
 
     match mode {
         Mode::ShowLicense => {
             print_license();
-            return Ok(());
+            std::process::exit(0);
         }
         Mode::ShowVersion => {
-            let commit_id = std::env::var("LAST_COMMIT_ID").ok();
-            let commit_date = std::env::var("LAST_COMMIT_DATE").ok();
+            let commit_id = option_env!("LAST_COMMIT_ID").map(str::to_string);
+            let commit_date = option_env!("LAST_COMMIT_DATE").map(str::to_string);
             print_version(&commit_id, &commit_date);
-            return Ok(());
+            std::process::exit(0);
         }
         Mode::Run(args) => {
             let config = RuntimeConfigBuilder::new()
