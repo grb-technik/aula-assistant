@@ -16,7 +16,7 @@ export default function App() {
                 </WindowProvider>
             </StartupDataProvider>
 
-            <Toaster richColors />
+            <Toaster duration={1000} visibleToasts={1} position="bottom-center" richColors />
         </>
     );
 }
