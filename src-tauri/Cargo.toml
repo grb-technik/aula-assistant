@@ -31,12 +31,7 @@ tauri-plugin-dialog = "2"
 tauri-plugin-os = "2"
 
 [target.'cfg(windows)'.dependencies]
-windows-sys = { version = "0.61.2", features = [
-    "Win32_Foundation",
-    "Win32_System_Console",
-    "Win32_System_Threading",
-    "Win32_UI_WindowsAndMessaging",
-] }
+windows = { path = "../crates/windows" }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-single-instance = "2"

@@ -1,0 +1,16 @@
+[package]
+name = "windows"
+description = "Windows-specific functionality for aula_assistant. Don't import this crate without a cfg(windows)!"
+version = "0.1.0"
+repository.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+windows-sys = { version = "0.61.2", features = [
+    "Win32_Foundation",
+    "Win32_System_Console",
+    "Win32_System_Threading",
+    "Win32_UI_WindowsAndMessaging",
+] }
