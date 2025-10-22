@@ -6,7 +6,7 @@ pub mod error;
 #[cfg(test)]
 mod test;
 
-pub fn create_artnet_socket(bind_addr: String, broadcast: bool) -> Result<UdpSocket, ArtNetError> {
+pub fn create_artnet_socket(bind_addr: &SocketAddr, broadcast: bool) -> Result<UdpSocket, ArtNetError> {
     let socket = UdpSocket::bind(bind_addr).map_err(ArtNetError::FailedToBindSocket)?;
     socket
         .set_broadcast(broadcast)

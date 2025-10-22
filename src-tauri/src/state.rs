@@ -53,8 +53,12 @@ impl AppStateBuilder {
             lighting_scenes: self.lighting_scenes,
             artnet_data: Mutex::new([0; 512]),
             artnet_socket: create_artnet_socket(
-                self.artnet_bind.unwrap(),
-                self.artnet_broadcast.unwrap(),
+                &self
+                    .artnet_bind
+                    .expect("artnet_bind must be set")
+                    .parse()
+                    .expect("artnet_bind is an invalid socket address"),
+                self.artnet_broadcast.expect("artnet_broadcast must be set"),
             )
             .expect("failed to create artnet socket"),
         }

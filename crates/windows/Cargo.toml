@@ -1,11 +1,12 @@
 [package]
 name = "windows"
-description = "Windows-specific functionality for aula_assistant. Don't import this crate without a cfg(windows)!"
+description = "!!!windows-only!!! crate for windows-specific functionality"
 version = "0.1.0"
 repository.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 publish.workspace = true
+authors = ["Christian Fuchte <christian.fuchte@grb-online.net>"]
 
 [dependencies]
 windows-sys = { version = "0.61.2", features = [
