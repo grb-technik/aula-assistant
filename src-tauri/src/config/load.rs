@@ -9,10 +9,11 @@ pub fn load_app_config(
 ) -> Result<FileConfig, Error> {
     let config_path = resolve_config_file_path(app.path().app_config_dir(), args_config_path)?;
 
-    log::info!("using config path: {}", config_path.display());
-
     let reader = match open_config_file_as_reader(&config_path) {
-        Ok(reader) => Some(reader),
+        Ok(reader) => {
+            log::info!("using config path: {}", config_path.display());
+            Some(reader)
+        }
         Err(e) => match e {
             Error::FileNotFound(_) => {
                 log::info!("config file not found, using default settings.");
