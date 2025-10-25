@@ -11,6 +11,7 @@ pub struct FileConfig {
     security: Security,
     defaults: Defaults,
     lighting: Lighting,
+    hdmimatrix: HDMIMatrix,
 }
 
 impl FileConfig {
@@ -25,6 +26,10 @@ impl FileConfig {
     pub fn lighting(&self) -> &Lighting {
         &self.lighting
     }
+
+    pub fn hdmimatrix(&self) -> &HDMIMatrix {
+        &self.hdmimatrix
+    }
 }
 
 impl Validate for FileConfig {
@@ -32,6 +37,7 @@ impl Validate for FileConfig {
         self.defaults.validate()?;
         self.security.validate()?;
         self.lighting.validate()?;
+        self.hdmimatrix.validate()?;
         Ok(())
     }
 }
@@ -55,6 +61,10 @@ impl Default for FileConfig {
                     patched: vec![],
                 },
                 scenes: vec![],
+            },
+            hdmimatrix: HDMIMatrix {
+                host: "".to_string(),
+                port: None,
             },
         }
     }
@@ -332,5 +342,33 @@ impl Set {
 
     pub fn value(&self) -> u8 {
         self.value
+    }
+}
+
+#[derive(Deserialize, Debug, Clone, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct HDMIMatrix {
+    host: String,
+    port: Option<u16>,
+}
+
+impl Validate for HDMIMatrix {
+    fn validate(&self) -> Result<(), FileValidationError> {
+        if self.host.is_empty() {
+            return Err(FileValidationError::HDMIMatrixHostInvalid(
+                "HDMI matrix host must be defined".to_string(),
+            ));
+        }
+        Ok(())
+    }
+}
+
+impl HDMIMatrix {
+    pub fn host(&self) -> &str {
+        &self.host
+    }
+
+    pub fn port(&self) -> Option<u16> {
+        self.port
     }
 }

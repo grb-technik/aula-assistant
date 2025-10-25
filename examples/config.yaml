@@ -16,9 +16,9 @@ lighting:
         types:
             - name: spot # fixture type name
               channels: # order matters
-                      - red
-                      - green
-                      - blue
+                  - red
+                  - green
+                  - blue
         patched:
             - name: spot1 # label
               type: spot # fixture type name
@@ -46,3 +46,7 @@ lighting:
               - fixture: spot1
                 channel: blue
                 value: 0
+
+hdmimatrix:
+    host: 127.0.0.1
+    port: 80

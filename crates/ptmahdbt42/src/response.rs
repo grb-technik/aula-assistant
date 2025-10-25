@@ -43,7 +43,7 @@ impl Response {
 
 pub(crate) fn parse_response_buffer(buf: Vec<u8>) -> Result<Response, PTMAHDBT42Error> {
     let (headers, body) = buf.split_at(
-        buf.windows(4)
+        buf.windows(2)
             .position(|window| window == LFLF)
             .ok_or(PTMAHDBT42Error::InvalidResponse)?,
     );
@@ -59,12 +59,14 @@ pub(crate) fn parse_response_buffer(buf: Vec<u8>) -> Result<Response, PTMAHDBT42
 
     {
         let status_line = header_lines[0];
+
         let status_line_str = String::from_utf8(status_line.to_vec())
             .map_err(PTMAHDBT42Error::FailedToConvertResponseToUtf8)?;
         let status_parts: Vec<&str> = status_line_str.splitn(3, ' ').collect();
         if status_parts.len() < 3 {
             return Err(PTMAHDBT42Error::InvalidResponse);
         }
+
         http_version = status_parts[0].to_string();
         status_code = status_parts[1]
             .parse::<u16>()
@@ -83,7 +85,7 @@ pub(crate) fn parse_response_buffer(buf: Vec<u8>) -> Result<Response, PTMAHDBT42
 
     let body_str = if body.len() > 4 {
         Some(
-            String::from_utf8(body[4..].to_vec())
+            String::from_utf8(body[2..].to_vec())
                 .map_err(PTMAHDBT42Error::FailedToConvertResponseToUtf8)?,
         )
     } else {

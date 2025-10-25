@@ -53,6 +53,7 @@ pub enum FileValidationError {
     ArtnetUniverseInvalid(String),
     PatchedFixtureTypeInvalid(String),
     SceneSetInvalid(String),
+    HDMIMatrixHostInvalid(String),
 }
 
 impl std::fmt::Display for FileValidationError {
@@ -78,6 +79,9 @@ impl std::fmt::Display for FileValidationError {
                 }
                 FileValidationError::SceneSetInvalid(str) => {
                     format!("lighting.scenes scene set is invalid: {}", str)
+                }
+                FileValidationError::HDMIMatrixHostInvalid(str) => {
+                    format!("hdmi_matrix.host is invalid: {}", str)
                 }
             }
         )

@@ -20,6 +20,7 @@ chrono = "0.4.41"
 [dependencies]
 artnet = { path = "../crates/artnet" }
 cli = { path = "../crates/cli" }
+ptmahdbt42 = { path = "../crates/ptmahdbt42" }
 tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }

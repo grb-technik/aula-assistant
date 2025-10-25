@@ -65,7 +65,8 @@ pub fn run(runtime_config: RuntimeConfig) -> tauri::Result<()> {
             commands::startup_data::get_startup_data,
             commands::security::check_advanced_pin,
             commands::artnet::get_all_artnet_scenes,
-            commands::artnet::run_artnet_scene
+            commands::artnet::run_artnet_scene,
+            commands::beamer::set_beamer_power_state,
         ])
         .run(tauri::generate_context!())
 }

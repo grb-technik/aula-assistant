@@ -15,6 +15,8 @@ pub struct AppStateBuilder {
     artnet_target: Option<SocketAddr>,
     artnet_universe: Option<u16>,
     lighting_scenes: HashMap<String, LightingScene>,
+    ptmahdbt42_host: Option<String>,
+    ptmahdbt42_port: Option<u16>,
 }
 
 impl AppStateBuilder {
@@ -28,6 +30,8 @@ impl AppStateBuilder {
             artnet_target: None,
             artnet_universe: None,
             lighting_scenes: HashMap::new(),
+            ptmahdbt42_host: None,
+            ptmahdbt42_port: None,
         }
     }
 
@@ -61,6 +65,8 @@ impl AppStateBuilder {
                 self.artnet_broadcast.expect("artnet_broadcast must be set"),
             )
             .expect("failed to create artnet socket"),
+            ptmahdbt42_host: self.ptmahdbt42_host.expect("ptmahdbt42_host must be set"),
+            ptmahdbt42_port: self.ptmahdbt42_port.expect("ptmahdbt42_port must be set"),
         }
     }
 }
@@ -128,6 +134,9 @@ impl TakeFrom<&FileConfig> for AppStateBuilder {
             let lighting_scene = LightingScene::new(channels.to_vec());
             self.lighting_scenes.insert(scene_name, lighting_scene);
         }
+
+        self.ptmahdbt42_host = Some(config.hdmimatrix().host().to_string());
+        self.ptmahdbt42_port = config.hdmimatrix().port().or(Some(80));
     }
 }
 
@@ -143,6 +152,9 @@ pub struct AppState {
     artnet_socket: UdpSocket,
     artnet_data: Mutex<[u8; 512]>,
     lighting_scenes: HashMap<String, LightingScene>,
+    // hdmi matrix
+    ptmahdbt42_host: String,
+    ptmahdbt42_port: u16,
 }
 
 impl AppState {
@@ -176,6 +188,14 @@ impl AppState {
 
     pub fn lighting_scenes(&self) -> &HashMap<String, LightingScene> {
         &self.lighting_scenes
+    }
+
+    pub fn ptmahdbt42_host(&self) -> &str {
+        &self.ptmahdbt42_host
+    }
+
+    pub fn ptmahdbt42_port(&self) -> u16 {
+        self.ptmahdbt42_port
     }
 }
 
