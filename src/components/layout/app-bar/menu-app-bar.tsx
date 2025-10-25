@@ -124,30 +124,40 @@ OS: ${os_info.platform()} ${os_info.arch()} ${os_info.version()}`,
                 <MenubarMenu>
                     <MenubarTrigger tabIndex={-1}>Help</MenubarTrigger>
                     <MenubarContent>
-                        <a target="_blank" href="https://aula-assistant.teschnik.de/docs">
+                        <a target="_blank" rel="noreferrer" href="https://aula-assistant.teschnik.de/docs">
                             <MenubarItem>Documentation</MenubarItem>
                         </a>
                         <a
                             target="_blank"
+                            rel="noreferrer"
                             href="https://github.com/grb-technik/aula-assistant/blob/master/CHANGELOG.md">
                             <MenubarItem>Show Release Notes</MenubarItem>
                         </a>
 
                         <MenubarSeparator />
 
-                        <a target="_blank" href="https://github.com/grb-technik/aula-assistant/issues/new/choose">
+                        <a
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://github.com/grb-technik/aula-assistant/issues/new/choose">
                             <MenubarItem>Report Issue</MenubarItem>
                         </a>
 
                         <MenubarSeparator />
 
-                        <a target="_blank" href="https://github.com/grb-technik/aula-assistant/blob/master/LICENSE.txt">
+                        <a
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://github.com/grb-technik/aula-assistant/blob/master/LICENSE.txt">
                             <MenubarItem>View License</MenubarItem>
                         </a>
 
                         <MenubarSeparator />
 
-                        <a target="_blank" href="https://github.com/grb-technik/aula-assistant/releases">
+                        <a
+                            target="_blank"
+                            rel="noreferrer"
+                            href="https://github.com/grb-technik/aula-assistant/releases">
                             <MenubarItem>Check for Updates</MenubarItem>
                         </a>
 

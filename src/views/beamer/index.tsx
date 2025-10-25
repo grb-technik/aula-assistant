@@ -27,7 +27,7 @@ export function BeamerView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLo
                 <span className="text-muted-foreground text-center text-sm text-pretty">
                     There are two HDMI inputs in the auditorium: <br />
                     One is under the stage on the left (facing the stage). <br />
-                    The other is in the technician's booth at the back. <br />
+                    The other is in the technician&apos;s booth at the back. <br />
                     For further instructions, please refer to the documentation or help section.
                 </span>
             </ViewCard>

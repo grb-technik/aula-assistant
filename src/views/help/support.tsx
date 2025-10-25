@@ -38,7 +38,8 @@ export function HelpSupportView({ onLocationSwitch }: { onLocationSwitch: (to: V
                     </tbody>
                 </table>
                 <span className="text-muted-foreground border-muted-foreground w-full p-2 text-center text-sm text-pretty">
-                    We'd prefer to be contacted via email as long as possible, as we are often unable to answer calls.
+                    We&apos;d prefer to be contacted via email as long as possible, as we are often unable to answer
+                    calls.
                 </span>
             </ViewCard>
         </div>
