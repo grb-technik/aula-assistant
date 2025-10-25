@@ -17,15 +17,14 @@ Ensure you have the latest version of [Rust](https://www.rust-lang.org/tools/ins
 
 ## Additional Notes
 
-## Target Hardware and Environment
+### Target Hardware and Environment
 
-This software is primarily designed to run on a Raspberry Pi equipped with a 7" capacitive touch display (resolution: 800×480) in tablet mode. However, the interface is built to be responsive and should work well on laptops or other screen sizes too.
+This software is primarily designed to run on a Raspberry Pi equipped with a 7" capacitive touch display (resolution: 800×480) in tablet mode. The default window size is set accordingly to reflect the constraints of the Raspberry Pi display.
+However, the interface shall be responsive and should work well on laptops or other screen sizes too.
 
-Because the target environment relies on touch input—often less precise than a mouse—all UI elements must be designed to function without the need for a keyboard or external mouse. The default window size is set accordingly to reflect the constraints of the Raspberry Pi display.
+Because the target environment relies on touch input (often less precise than a mouse) all ui elements must be designed to function without the need for a keyboard or an external mouse.
 
-For reference, see the [display on berrybase.de](https://www.berrybase.de/offizielles-raspberry-pi-7-display-mit-kapazitiven-touchscreen).
-
-## Network
+### Network
 
 The application communicates with other devices exclusively over the local network.
 It is designed to be a passive network participant, meaning:
@@ -34,3 +33,13 @@ It is designed to be a passive network participant, meaning:
 - It must not block or interfere with any network traffic, including connections initiated by other devices on the same network.
 
 This design allows third-party devices to continue managing or interacting with other components on the network—even if this software becomes unresponsive or fails.
+
+### Hardware Details
+
+For reference, here is a complete list of all hardware components used as part of the interface or as part of the target environment:
+
+- [Raspberry Pi 4 Model B (8GB RAM)](https://www.berrybase.de/raspberry-pi-4-computer-modell-b-8gb-ram)
+- [Raspberry Pi 7" capacitive touch display](https://www.berrybase.de/offizielles-raspberry-pi-7-display-mit-kapazitiven-touchscreen)
+- [PureLink PT-MA-HDBT42 4x2 4K 18Gbps HDMI HDBaseT Matrix with Scaler](https://www.purelink.de/en/switcher-matrices/hdbaset/3433/4x2-4k-18gbps-hdmi-hdbaset-matrix-with-scaler)
+- Panasonic PT-EX12K
+- ENTTEC ODE Mk2 Ethernet to DMX converter

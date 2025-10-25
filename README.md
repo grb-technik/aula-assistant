@@ -8,7 +8,7 @@ while also offering advanced controls for technical staff.
 
 - [Features](#features)
 - [Installation](#installation)
-- [Build from Source](#build-from-source)
+- [Building from Source](#building-from-source)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -20,30 +20,41 @@ while also offering advanced controls for technical staff.
 
 <!-- TODO -->
 
-## Build from Source
+## Building from Source
 
-### Prequisites
+To build Aula Assistant from source, follow these steps:
 
-- [git](https://git-scm.com/downloads)
-- [nodejs](https://nodejs.org/en/download) v24.4.1
-- [pnpm](https://pnpm.io/installation) v10.13.1
-- [rust](https://www.rust-lang.org/tools/install) v1.87.0
+### Prerequisites
+
+Make sure you have the following installed on your system:
+
+- [Git](https://git-scm.com/downloads)
+- [Rust](https://www.rust-lang.org/tools/install) v1.90.0 or higher
+- [Node.js](https://nodejs.org/en/download) v24.4.1 or higher
+- [pnpm](https://pnpm.io/installation)
+- [Tauri Prerequisites](https://tauri.app/start/prerequisites) for your platform
 
 ### Steps
 
-> [!NOTE]
-> By default, the `pnpm tauri build` command will create a binary in release mode and the following installers:
->
-> - msi (Windows)
-> - deb (Linux)
-
 ```bash
-git clone https://github.com/grb-technik/aula-assistant.git
-cd aula-assistant
+# clone the repository
+git clone https://github.com/grb-technik/aula-assistant.git; cd aula-assistant
+# install dependencies
 pnpm install
-pnpm tauri build
-# binary and installers can be found at `src-tauri/target/release`
+cargo check
+# build the project
+pnpm tauri build # --no-bundle if you just want the executable
+# navigate to the output
+cd target/release
 ```
+
+After building, you'll find:
+
+- The executable (`aula-assistant` or `aula-assistant.exe`) in `target/release`.
+- The platform-specific installer in `target/release/bundle` if your platform supports one of the following formats:
+    - msi (Windows)
+    - deb (Debian-based Linux)
+    - other formats as supported by Tauri need to be explicitly enabled by running `pnpm tauri build --bundles <BUNDLES>`
 
 ## Contributing
 
