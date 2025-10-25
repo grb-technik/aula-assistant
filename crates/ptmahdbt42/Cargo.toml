@@ -1,6 +1,6 @@
 [package]
 name = "ptmahdbt42"
-description = "tiny implementation of all needed features of the PT-MA_HDBT42's RS232 passthrough protocol via network api"
+description = "tiny implementation of all needed features of the PT-MA_HDBT42's network api including rs232 passthrough for the Panasonic PT-EX12K projector"
 version = "0.1.0"
 repository.workspace = true
 edition.workspace = true

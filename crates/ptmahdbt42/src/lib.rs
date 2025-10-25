@@ -18,8 +18,8 @@ pub(crate) const CRLF: &[u8; 2] = &[0x0D, 0x0A];
 pub(crate) const LFLF: &[u8; 2] = &[0x0A, 0x0A];
 // const RS232_COMMAND_ENDPOINT: &str = "/cgi-bin/MMX32_Keyvalue.cgi";
 // const RS232_COMMAND_METHOD: &str = "POST";
-// const RS232_BODY_POWER_ON: &str = "{CMD=>Send_H_4_4:02 50 4F 4E 03";
-// const RS232_BODY_POWER_OFF: &str = "{CMD=>Send_H_4_4:02 50 4F 46 03";
+// const RS232_BODY_POWER_ON: &str = "{CMD=>Send_H_4_4:02 50 4F 4E 03"; (PON)
+// const RS232_BODY_POWER_OFF: &str = "{CMD=>Send_H_4_4:02 50 4F 46 03"; (POF)
 
 pub fn execute_request(request: &Request) -> Result<Response, PTMAHDBT42Error> {
     let addr: SocketAddr = SocketAddr::new(
