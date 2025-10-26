@@ -101,7 +101,7 @@ pub(crate) fn build_request_package(request: &Request) -> Vec<u8> {
     let mut request_vec: Vec<u8> = vec![];
 
     request_vec
-        .extend_from_slice(format!("{} {} HTTP/1.1", request.method, request.path).as_bytes());
+        .extend_from_slice(format!("{} {} HTTP/1.0", request.method, request.path).as_bytes());
     request_vec.extend_from_slice(CRLF);
 
     if request.port == 80 {
@@ -121,7 +121,9 @@ pub(crate) fn build_request_package(request: &Request) -> Vec<u8> {
         let body_bytes = body.to_bytes();
         request_vec.extend_from_slice(format!("Content-Length: {}", body_bytes.len()).as_bytes());
         request_vec.extend_from_slice(CRLF);
+        request_vec.extend_from_slice(CRLF);
         request_vec.extend_from_slice(body_bytes);
+    } else {
         request_vec.extend_from_slice(CRLF);
     }
 

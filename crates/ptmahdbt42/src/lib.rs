@@ -14,6 +14,9 @@ pub mod error;
 pub mod request;
 pub mod response;
 
+#[cfg(test)]
+mod test;
+
 pub(crate) const CRLF: &[u8; 2] = &[0x0D, 0x0A];
 pub(crate) const LFLF: &[u8; 2] = &[0x0A, 0x0A];
 
