@@ -1,5 +1,5 @@
 {
-    "name": "aula-assistant",
+    "name": "aula-assistant-client",
     "description": "a user-friendly media control system used in the Gymnasium Riedberg auditorium",
     "private": true,
     "version": "0.1.0",
