@@ -1,23 +1,29 @@
-import { invoke } from "@tauri-apps/api/core";
 import { tryCatch } from "./utils";
-import { error } from "@tauri-apps/plugin-log";
 
 export async function loadArtnetScenes(): Promise<string[] | null> {
-    const result = await tryCatch(invoke<string[]>("get_all_artnet_scenes"));
+    const result = await tryCatch(
+        new Promise<string[]>((resolve, _reject) => {
+            resolve([]); // TODO
+        }),
+    );
+
     if (result.error) {
-        error(`failed to retrieve lighting scenes: failed to invoke get_all_artnet_scenes: ${result.error.message}`);
         return null;
     }
+
     return result.data || [];
 }
 
-export async function runArtnetScene(sceneName: string): Promise<boolean> {
-    const result = await tryCatch(invoke<void>("run_artnet_scene", { sceneName }));
+export async function runArtnetScene(_sceneName: string): Promise<boolean> {
+    const result = await tryCatch(
+        new Promise<boolean>((resolve, _reject) => {
+            resolve(true); // TODO
+        }),
+    );
+
     if (result.error) {
-        error(
-            `failed to run lighting scene '${sceneName}': failed to invoke run_artnet_scene: ${result.error.message}`,
-        );
         return false;
     }
+
     return true;
 }

@@ -8,19 +8,13 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "tauri": "tauri",
         "format": "prettier --write ."
     },
     "dependencies": {
         "@radix-ui/react-context-menu": "^2.2.16",
         "@radix-ui/react-menubar": "^1.1.16",
-        "@radix-ui/react-slot": "^1.2.3",
-        "@tailwindcss/vite": "^4.1.14",
-        "@tauri-apps/api": "^2.8.0",
-        "@tauri-apps/plugin-dialog": "~2.3.3",
-        "@tauri-apps/plugin-log": "~2.6.0",
-        "@tauri-apps/plugin-opener": "^2.5.0",
-        "@tauri-apps/plugin-os": "~2.3.1",
+        "@radix-ui/react-slot": "^1.2.4",
+        "@tailwindcss/vite": "^4.1.17",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
@@ -29,12 +23,11 @@
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "sonner": "^2.0.7",
-        "tailwind-merge": "^3.3.1",
-        "tailwindcss": "^4.1.14"
+        "tailwind-merge": "^3.4.0",
+        "tailwindcss": "^4.1.17"
     },
     "devDependencies": {
-        "@tauri-apps/cli": "^2.8.4",
-        "@types/node": "^22.18.11",
+        "@types/node": "^22.19.0",
         "@types/react": "^18.3.26",
         "@types/react-dom": "^18.3.7",
         "@vitejs/plugin-react": "^4.7.0",
@@ -42,6 +35,6 @@
         "prettier-plugin-tailwindcss": "^0.6.14",
         "tw-animate-css": "^1.4.0",
         "typescript": "~5.6.3",
-        "vite": "^6.4.0"
+        "vite": "^6.4.1"
     }
 }

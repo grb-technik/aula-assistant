@@ -1,16 +1,13 @@
-import { error } from "@tauri-apps/plugin-log";
 import { tryCatch } from "./utils";
-import { invoke } from "@tauri-apps/api/core";
 
-export async function checkAdvancedPin(pin: string): Promise<boolean | null> {
+export async function checkAdvancedPin(_pin: string): Promise<boolean | null> {
     const result = await tryCatch(
-        invoke<boolean>("check_advanced_pin", {
-            pin: pin,
+        new Promise<boolean>((resolve, _reject) => {
+            resolve(true); // TODO
         }),
     );
 
     if (result.error) {
-        error(`failed to authenticate: failed to invoke check_advanced_pin: ${result.error.message}`);
         return null;
     }
 
