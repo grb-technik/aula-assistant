@@ -5,10 +5,9 @@ import { BeamerView } from "./beamer";
 import { LightingView } from "./lighting";
 import { HelpView } from "./help";
 import { HelpSupportView } from "./help/support";
-import { AdvancedAuthenticateView } from "./advanced/auth";
 import { ErrorView } from "./error";
 
-export type ViewLocation = "start" | "help" | "audio" | "beamer" | "lighting" | "help:support" | "advanced:auth";
+export type ViewLocation = "start" | "help" | "audio" | "beamer" | "lighting" | "help:support";
 
 export function Views() {
     const [location, setLocation] = useState<ViewLocation>("start");
@@ -26,8 +25,6 @@ export function Views() {
             return <HelpView onLocationSwitch={(to) => setLocation(to)} />;
         case "help:support":
             return <HelpSupportView onLocationSwitch={(to) => setLocation(to)} />;
-        case "advanced:auth":
-            return <AdvancedAuthenticateView onLocationSwitch={(to) => setLocation(to)} />;
         default:
             return (
                 <ErrorView

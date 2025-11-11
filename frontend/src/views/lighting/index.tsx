@@ -2,13 +2,32 @@ import { MiniViewButton } from "@/components/mini-view-button";
 import { BackArrowIcon, MovingHeadIcon } from "@/components/icons";
 import { ViewLocation } from "..";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
 import { ViewButton } from "@/components/view-button";
-import { loadArtnetScenes, runArtnetScene } from "@/lib/lighting";
+import { runArtnetScene } from "@/lib/lighting";
+
+const scenes: {
+    label: string;
+    value: string;
+}[] = [
+    {
+        label: "Anlage Ein",
+        value: "anlage-ein",
+    },
+    {
+        label: "Anlage Aus",
+        value: "anlage-aus",
+    },
+    {
+        label: "Bühne Dunkel",
+        value: "clear",
+    },
+    {
+        label: "Bühne Weiß",
+        value: "stage-ww",
+    },
+];
 
 export function LightingView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLocation) => void }) {
-    const [scenes, setScenes] = useState<string[]>([]);
-
     const onButtonClick = async (sceneName: string) => {
         if (await runArtnetScene(sceneName)) {
             toast.success(`Activated lighting scene '${sceneName}'.`);
@@ -16,17 +35,6 @@ export function LightingView({ onLocationSwitch }: { onLocationSwitch: (to: View
             toast.error(`Failed to run lighting scene '${sceneName}'.`);
         }
     };
-
-    useEffect(() => {
-        loadArtnetScenes().then((scenes: string[] | null) => {
-            if (scenes == null) {
-                toast.error("Failed to retrieve lighting scenes.");
-                setScenes([]);
-                return;
-            }
-            setScenes(scenes);
-        });
-    }, [setScenes]);
 
     if (scenes.length === 0) {
         return (
@@ -52,9 +60,9 @@ export function LightingView({ onLocationSwitch }: { onLocationSwitch: (to: View
             {scenes.map((scene, index) => (
                 <MiniViewButton
                     key={index}
-                    title={scene}
+                    title={scene.label}
                     onClick={() => {
-                        onButtonClick(scene);
+                        onButtonClick(scene.value);
                     }}
                     icon={<MovingHeadIcon className="fill-foreground" height={32} width={32} />}
                 />

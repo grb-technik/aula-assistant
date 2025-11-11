@@ -1,15 +1,7 @@
-import { tryCatch } from "./utils";
+import { useFetch } from "./utils";
 
-export async function setBeamerPower(_on: boolean): Promise<boolean> {
-    const result = await tryCatch(
-        new Promise<boolean>((resolve, _reject) => {
-            resolve(true); // TODO
-        }),
-    );
+export async function setBeamerPower(on: boolean): Promise<boolean> {
+    const result = await useFetch(`/beamer/power/${on ? "on" : "off"}`, "POST");
 
-    if (result.error) {
-        return false;
-    }
-
-    return true;
+    return result.success;
 }

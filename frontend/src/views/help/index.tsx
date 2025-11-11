@@ -1,5 +1,5 @@
 import { ViewButton } from "@/components/view-button";
-import { BackArrowIcon, LockIcon, SupportIcon } from "@/components/icons";
+import { BackArrowIcon, SupportIcon } from "@/components/icons";
 import { ViewLocation } from "..";
 import { ViewCard } from "@/components/view-card";
 
@@ -22,12 +22,7 @@ export function HelpView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLoca
                 <span className="-mb-2 text-center">View Documentation</span>
             </ViewCard>
             <ViewButton
-                title="Advanced"
-                description="Authorized users only"
-                icon={<LockIcon className="fill-foreground" height={48} width={48} />}
-                onClick={() => onLocationSwitch("advanced:auth")}
-            />
-            <ViewButton
+                className="col-span-2"
                 title="Ask for help"
                 description="(We won't always be available)"
                 icon={<SupportIcon className="fill-foreground" height={48} width={48} />}
