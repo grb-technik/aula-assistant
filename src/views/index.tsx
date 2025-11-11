@@ -6,6 +6,7 @@ import { LightingView } from "./lighting";
 import { HelpView } from "./help";
 import { HelpSupportView } from "./help/support";
 import { AdvancedAuthenticateView } from "./advanced/auth";
+import { ErrorView } from "./error";
 
 export type ViewLocation = "start" | "help" | "audio" | "beamer" | "lighting" | "help:support" | "advanced:auth";
 
@@ -28,6 +29,13 @@ export function Views() {
         case "advanced:auth":
             return <AdvancedAuthenticateView onLocationSwitch={(to) => setLocation(to)} />;
         default:
-            throw new Error(`No view component set for location: ${location} (views/index.tsx)`);
+            return (
+                <ErrorView
+                    onRestoreClick={() => {
+                        setLocation("start");
+                    }}
+                    error={`No view component set for location: ${location} (views/index.tsx)`}
+                />
+            );
     }
 }

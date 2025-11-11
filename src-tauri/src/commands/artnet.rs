@@ -26,7 +26,7 @@ pub fn run_artnet_scene(
     {
         let mut artnet_data_mut = app_state.artnet_data();
 
-        for (i, value) in scene.channels().iter().enumerate() {
+        for (i, value) in scene.iter().enumerate() {
             if let Some(v) = value {
                 artnet_data_mut[i] = *v;
             }

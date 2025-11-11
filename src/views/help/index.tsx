@@ -22,16 +22,16 @@ export function HelpView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLoca
                 <span className="-mb-2 text-center">View Documentation</span>
             </ViewCard>
             <ViewButton
-                title="Ask for help"
-                description="(We won't always be available)"
-                icon={<SupportIcon className="fill-foreground" height={48} width={48} />}
-                onClick={() => onLocationSwitch("help:support")}
-            />
-            <ViewButton
                 title="Advanced"
                 description="Authorized users only"
                 icon={<LockIcon className="fill-foreground" height={48} width={48} />}
                 onClick={() => onLocationSwitch("advanced:auth")}
+            />
+            <ViewButton
+                title="Ask for help"
+                description="(We won't always be available)"
+                icon={<SupportIcon className="fill-foreground" height={48} width={48} />}
+                onClick={() => onLocationSwitch("help:support")}
             />
         </div>
     );

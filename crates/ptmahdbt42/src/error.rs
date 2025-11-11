@@ -20,10 +20,10 @@ impl std::fmt::Display for PTMAHDBT42Error {
             }
             PTMAHDBT42Error::FailedToSetReadTimeout(e) => {
                 write!(f, "failed to set read timeout: {}", e)
-            },
+            }
             PTMAHDBT42Error::FailedToConvertResponseToUtf8(e) => {
                 write!(f, "failed to convert response to UTF-8: {}", e)
-            },
+            }
             PTMAHDBT42Error::InvalidResponse => write!(f, "invalid response"),
         }
     }

@@ -1,5 +1,5 @@
 import { error } from "@tauri-apps/plugin-log";
-import { tryCatch } from "./try-catch";
+import { tryCatch } from "./utils";
 import { invoke } from "@tauri-apps/api/core";
 
 export async function checkAdvancedPin(pin: string): Promise<boolean | null> {

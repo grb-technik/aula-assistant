@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { tryCatch } from "./try-catch";
+import { tryCatch } from "./utils";
 import { error } from "@tauri-apps/plugin-log";
 
 export async function loadArtnetScenes(): Promise<string[] | null> {

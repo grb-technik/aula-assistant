@@ -1,5 +1,5 @@
 import { SplashScreen } from "@/components/layout/splash";
-import { tryCatch } from "@/lib/try-catch";
+import { tryCatch } from "@/lib/utils";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -41,7 +41,7 @@ export const StartupDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
         };
 
         loadStartupData();
-    }, [setStartupData]);
+    }, []);
 
     if (!startupData) {
         return <SplashScreen />;

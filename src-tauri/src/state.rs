@@ -14,7 +14,7 @@ pub struct AppStateBuilder {
     artnet_broadcast: Option<bool>,
     artnet_target: Option<SocketAddr>,
     artnet_universe: Option<u16>,
-    lighting_scenes: HashMap<String, LightingScene>,
+    lighting_scenes: HashMap<String, Vec<Option<u8>>>,
     ptmahdbt42_host: Option<String>,
     ptmahdbt42_port: Option<u16>,
 }
@@ -131,8 +131,7 @@ impl TakeFrom<&FileConfig> for AppStateBuilder {
                 let value = set.value();
                 channels[channel_index] = Some(value);
             }
-            let lighting_scene = LightingScene::new(channels.to_vec());
-            self.lighting_scenes.insert(scene_name, lighting_scene);
+            self.lighting_scenes.insert(scene_name, channels.to_vec());
         }
 
         self.ptmahdbt42_host = Some(config.hdmimatrix().host().to_string());
@@ -151,7 +150,7 @@ pub struct AppState {
     artnet_universe: u16,
     artnet_socket: UdpSocket,
     artnet_data: Mutex<[u8; 512]>,
-    lighting_scenes: HashMap<String, LightingScene>,
+    lighting_scenes: HashMap<String, Vec<Option<u8>>>,
     // hdmi matrix
     ptmahdbt42_host: String,
     ptmahdbt42_port: u16,
@@ -186,7 +185,7 @@ impl AppState {
         self.artnet_data.lock().expect("failed to lock artnet data")
     }
 
-    pub fn lighting_scenes(&self) -> &HashMap<String, LightingScene> {
+    pub fn lighting_scenes(&self) -> &HashMap<String, Vec<Option<u8>>> {
         &self.lighting_scenes
     }
 
@@ -196,19 +195,5 @@ impl AppState {
 
     pub fn ptmahdbt42_port(&self) -> u16 {
         self.ptmahdbt42_port
-    }
-}
-
-pub struct LightingScene {
-    channels: Vec<Option<u8>>,
-}
-
-impl LightingScene {
-    pub fn new(channels: Vec<Option<u8>>) -> Self {
-        LightingScene { channels }
-    }
-
-    pub fn channels(&self) -> &Vec<Option<u8>> {
-        &self.channels
     }
 }

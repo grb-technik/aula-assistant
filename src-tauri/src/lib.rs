@@ -45,10 +45,12 @@ pub fn run(runtime_config: RuntimeConfig) -> tauri::Result<()> {
         .plugin(tauri_plugin_opener::init())
         .setup(move |app| {
             let file_config: config::FileConfig =
-                config::load_app_config(runtime_config.config_file_path(), app).map_err(|e| {
-                    log::error!("failed to load app config: {}", e);
-                    e
-                })?;
+                config::load_app_config(runtime_config.config_file_path(), app.handle()).map_err(
+                    |e| {
+                        log::error!("failed to load app config: {}", e);
+                        e
+                    },
+                )?;
 
             let mut app_state_builder = AppStateBuilder::new();
             // !!! do not change order !!!

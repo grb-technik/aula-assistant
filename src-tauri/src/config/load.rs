@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 
 pub fn load_app_config(
     args_config_path: Option<&PathBuf>,
-    app: &tauri::App,
+    app: &tauri::AppHandle,
 ) -> Result<FileConfig, Error> {
     let config_path = resolve_config_file_path(app.path().app_config_dir(), args_config_path)?;
 

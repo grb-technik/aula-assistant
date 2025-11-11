@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { tryCatch } from "@/lib/try-catch";
+import { tryCatch } from "@/lib/utils";
 import { toast } from "sonner";
 import { error } from "@tauri-apps/plugin-log";
 

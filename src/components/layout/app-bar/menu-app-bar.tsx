@@ -17,12 +17,10 @@ import {
 import { TraficLights } from "./trafic-lights";
 import { useWindow } from "@/contexts/window";
 import { useEffect, useState } from "react";
-import { message } from "@tauri-apps/plugin-dialog";
 import * as os_info from "@tauri-apps/plugin-os";
-import { tryCatch } from "@/lib/try-catch";
-import { error } from "@tauri-apps/plugin-log";
 import { toast } from "sonner";
 import { useStartupData } from "@/contexts/startup-data";
+import { showMessageDialog } from "@/lib/dialog";
 
 export function MenuAppBar() {
     const { isWindowMaximized, minimizeWindow, maximizeWindow, unmaximizeWindow, toggleMaximizeWindow, closeWindow } =
@@ -40,21 +38,18 @@ export function MenuAppBar() {
         }
     };
 
-    const showAboutDialog = () => {
-        tryCatch(
-            message(
-                `Aula Assistant
+    const showAboutDialog = async () => {
+        const dialogResult = await showMessageDialog(
+            `Aula Assistant
 Version: ${startUpData.build.version}
 ${startUpData.build.commit ? "Commit: " + startUpData.build.commit.long_id + "\n" : ""}Date: ${startUpData.build.date}
 OS: ${os_info.platform()} ${os_info.arch()} ${os_info.version()}`,
-                { title: "Aula Assistant", kind: "info" },
-            ),
-        ).then((result) => {
-            if (result.error) {
-                error(`failed to show about dialog: ${result.error}`);
-                toast.error("Failed to show about dialog.");
-            }
-        });
+            { title: "Aula Assistant", kind: "info" },
+        );
+
+        if (!dialogResult) {
+            toast.error("Failed to show about dialog.");
+        }
     };
 
     useEffect(() => {

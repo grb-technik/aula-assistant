@@ -31,7 +31,7 @@ function AppComponent() {
             <main
                 className={cn(
                     "w-full",
-                    startUpData.show_appbar ? "mt-10 min-h-[calc(100dvh-40px)]" : "mt-0 min-h-dvh",
+                    startUpData.show_appbar ? "mt-10 min-h-[calc(100dvh-(var(--spacing)*10))]" : "mt-0 min-h-dvh",
                 )}>
                 <Views />
             </main>
