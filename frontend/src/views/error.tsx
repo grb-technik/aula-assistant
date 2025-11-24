@@ -17,7 +17,7 @@ export function ErrorView({ error, onRestoreClick }: { error: Error | string; on
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <code className="bg-destructive/10 border-destructive/20 min-h-64 overflow-scroll rounded border px-1 py-0.5 text-sm break-words whitespace-pre-wrap">
+                    <code className="bg-destructive/10 border-destructive/20 min-h-64 overflow-scroll rounded border px-1 py-0.5 text-sm wrap-break-word whitespace-pre-wrap">
                         {typeof error === "string" ? error : error.message}
                     </code>
                 </CardContent>

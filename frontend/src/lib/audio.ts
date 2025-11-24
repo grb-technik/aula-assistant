@@ -1,16 +1,8 @@
 import { useFetch } from "./utils";
 
-export const CHANNELS = [
-    "m1",
-    "m2",
-    "m3",
-    "h1",
-    "bluetooth",
-    "beamer",
-    "sub",
-] as const;
+export const CHANNELS = ["m1", "m2", "m3", "h1", "bluetooth", "beamer", "sub"] as const;
 
-export type ChannelType = typeof CHANNELS[number];
+export type ChannelType = (typeof CHANNELS)[number];
 
 export async function loadSceneDefault() {
     return (await useFetch("/x32/load-scene/default", "POST")).success;

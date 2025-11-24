@@ -1,5 +1,5 @@
 import { ViewButton } from "@/components/view-button";
-import { ViewLocation } from "..";
+import type { ViewLocation } from "@/views";
 import { BackArrowIcon, PowerPlugOffIcon, PowerPlugOnIcon } from "@/components/icons";
 import { ViewCard } from "@/components/view-card";
 import { setBeamerPower } from "@/lib/beamer";

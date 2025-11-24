@@ -1,6 +1,6 @@
 import { ViewButton } from "@/components/view-button";
 import { BackArrowIcon, SupportIcon } from "@/components/icons";
-import { ViewLocation } from "..";
+import type { ViewLocation } from "@/views";
 import { ViewCard } from "@/components/view-card";
 
 export function HelpView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLocation) => void }) {

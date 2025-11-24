@@ -1,5 +1,5 @@
 import { BackArrowIcon, VolumeLowerIcon, VolumeOffIcon, VolumeUpIcon } from "@/components/icons";
-import { ViewLocation } from "..";
+import type { ViewLocation } from "@/views";
 import { MiniViewButton } from "@/components/mini-view-button";
 import { CHANNELS, faderMinus, faderPlus, muteToggle, ChannelType } from "@/lib/audio";
 import { toast } from "sonner";

@@ -1,6 +1,6 @@
 import { ViewButton } from "@/components/view-button";
 import { MovingHeadIcon, QuestionMarkIcon, ProjectorIcon, MusicNoteIcon } from "@/components/icons";
-import { ViewLocation } from "..";
+import type { ViewLocation } from "@/views";
 
 export function StartView({ onLocationSwitch }: { onLocationSwitch: (to: ViewLocation) => void }) {
     return (

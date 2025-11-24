@@ -1,6 +1,6 @@
 import { MiniViewButton } from "@/components/mini-view-button";
 import { BackArrowIcon, MovingHeadIcon } from "@/components/icons";
-import { ViewLocation } from "..";
+import type { ViewLocation } from "@/views";
 import { toast } from "sonner";
 import { ViewButton } from "@/components/view-button";
 import { runArtnetScene } from "@/lib/lighting";
