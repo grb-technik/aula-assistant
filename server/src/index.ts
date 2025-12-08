@@ -1,34 +1,26 @@
 import express from "express";
 import cors from "cors";
-import http from "http";
+import http from "node:http";
+import { readFileSync } from "node:fs";
+import { configSchema } from "./config.js";
 
-import env from "./env.js";
-import getLogger from "./utils/logger.js";
-
-import beamerHandler from "./api/routes/beamer.js";
-import x32Handler from "./api/routes/x32.js";
-import dmxHandler from "./api/routes/dmx.js";
+const config = configSchema.parse(
+    JSON.parse(readFileSync(new URL("../config.json", import.meta.url), "utf8"))
+);
 
 const app = express();
 const server = http.createServer(app);
-const mainLogger = getLogger("main");
 
-(async () => {
-    app.use(
-        cors({
-            origin: env.FRONTEND_URL,
-            methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-            optionsSuccessStatus: 204,
-            allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
-        }),
-    );
-    app.use(express.json());
+app.use(
+    cors({
+        origin: config.cors_origins,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        optionsSuccessStatus: 204,
+        allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+    }),
+);
+app.use(express.json());
 
-    app.use(beamerHandler());
-    app.use(x32Handler());
-    app.use(dmxHandler());
-
-    server.listen(env.PORT, () => {
-        mainLogger("INFO", `Server is running on port ${env.PORT}`);
-    });
-})();
+server.listen(config.port, () => {
+    console.log(`INFO Server is running on port ${config.port}`);
+});
