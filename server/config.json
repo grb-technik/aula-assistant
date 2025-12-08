@@ -1,4 +1,14 @@
 {
     "port": 8080,
-    "cors_origins": ["http://localhost:3000"]
+    "cors_origins": ["http://localhost:3000"],
+    "x32": {
+        "bind": {
+            "host": "192.168.1.6",
+            "port": 10023
+        },
+        "target": {
+            "host": "0.0.0.0",
+            "port": 10024
+        }
+    }
 }

@@ -1,10 +1,13 @@
 import { Socket } from "node:dgram";
 import { registerOSCListener, sendOSC } from "./core/osc.js";
 
-export function x32StartHeartbeat(socket: Socket) {
+export function x32StartHeartbeat(socket: Socket, onError?: (error: Error) => void) {
     const id = setInterval(() => {
-        sendOSC(socket, "/status");
-        sendOSC(socket, "/xremote");
+        const { error: status_error } = sendOSC(socket, "/status");
+        const { error: xremote_error } = sendOSC(socket, "/xremote");
+        if (status_error && xremote_error && onError) {
+            onError(new Error(`Failed to send heartbeat OSC messages: status_error=${status_error}, xremote_error=${xremote_error}`));
+        }
     }, 1000);
     return () => clearInterval(id);
 }
